@@ -1,15 +1,30 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+
+const loadTasks = () => {
+  try {
+    const data = localStorage.getItem('tasks')
+    return data ? JSON.parse(data) : []
+  } catch {
+    return []
+  }
+}
+
+const saveTasks = (tasks) => {
+  localStorage.setItem('tasks', JSON.stringify(tasks));
+}
+
 const taskSlice = createSlice({
   name: "task",
 
   initialState: {
-    tasks:[]
+    tasks:loadTasks()
   },
 
   reducers: {
     addTask: (state, action) => {
       state.tasks.push(action.payload)
+      saveTasks(state.tasks)
     },
 
     completeTask: (state, action) => {
@@ -18,6 +33,7 @@ const taskSlice = createSlice({
       
       if (task) {
         task.status = "Completed"
+        saveTasks(state.tasks)
       }
     }
   }
