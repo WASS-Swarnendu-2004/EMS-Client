@@ -2,45 +2,74 @@ import React from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 
 const AdminLayout = () => {
-
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     localStorage.removeItem("user");
-    navigate("/login")
-  }
+    navigate("/login");
+  };
 
   return (
-    <div style={{ display: "flex", height: "100vh" }}>
+    <div className="flex min-h-screen">
       
       
-      <div
-        style={{
-          width: "200px",
-          padding: "20px",
-          background: "#ddd",
-          display: "flex",
-          flexDirection: "column",
-          gap: "10px"
-        }}
-      >
-        <h3>Admin Panel</h3>
+      <div className="w-64 bg-gradient-to-b from-slate-900 to-slate-800 text-white p-5 flex flex-col shadow-xl">
+        <h2 className="text-2xl font-bold mb-6">
+          Admin Panel
+        </h2>
 
-        <NavLink to="dashboard">Dashboard</NavLink>
-        <NavLink to="tasks">Tasks</NavLink>
-        <NavLink to="leaves">Leaves</NavLink>
+        <nav className="flex flex-col gap-3">
+          <NavLink
+            to="dashboard"
+            className={({ isActive }) => 
+              `px-3 py-2 rounded ${
+              isActive
+                ? "bg-blue-600 text-white"
+                :"hover:bg-slate-700"
+            }`}
+          >
+            Dashboard
+          </NavLink>
 
-        <button onClick={handleLogout}>
+          <NavLink
+            to="tasks"
+            className={({ isActive }) => 
+              `px-3 py-2 rounded ${
+              isActive
+                ? "bg-blue-600 text-white"
+                :"hover:bg-slate-700"
+            }`}
+          >
+            Tasks
+          </NavLink>
+
+          <NavLink
+            to="leaves"
+            className={({ isActive }) => 
+              `px-3 py-2 rounded ${
+              isActive
+                ? "bg-blue-600 text-white"
+                :"hover:bg-slate-700"
+            }`}
+          >
+            Leaves
+          </NavLink>
+        </nav>
+
+        <button
+          onClick={handleLogout}
+          className="mt-auto bg-red-500 hover:bg-red-600 px-4 py-2 rounded"
+        >
           Logout
         </button>
       </div>
 
-      
-      <div style={{ flex: 1, padding: "20px" }}>
-        <Outlet />
+     
+      <div className="flex-1 bg-slate-100 p-8 overflow-y-auto">
+        <div className="bg-white rounded-xl shadow-md p-6 min-h-full">
+          <Outlet />
+        </div>
       </div>
-
-
 
     </div>
   );

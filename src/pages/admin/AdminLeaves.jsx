@@ -9,49 +9,60 @@ const AdminLeaves = () => {
     (state) => state.leave.leaves
   );
 
-  console.log("Redux Leaves:", leaves);
+return (
+  <div>
+    <h1 className="text-3xl font-bold mb-6">
+      Leave Requests
+    </h1>
 
-  const getStatusStyle = (status) => {
-    switch (status) {
-      case 'Approved':
-        return { color: 'green' };
+    {leaves.length === 0 ? (
+      <div className="bg-white rounded-xl shadow p-6">
+        <p className="text-gray-500">
+          No leave requests found.
+        </p>
+      </div>
+    ) : (
+      <div className="space-y-4">
+        {leaves.map((leave) => (
+          <div
+            key={leave.id}
+            className="bg-white rounded-xl shadow p-5"
+          >
+            <h3 className="text-lg font-semibold mb-3">
+              {leave.reason}
+            </h3>
 
-      case 'Rejected':
-        return { color: 'red' };
-
-      case 'Pending':
-        return { color: 'orange' };
-
-      default:
-        return {};
-    }
-  };
-
-  console.log(leaves);
-
-  return (
-    <div>
-      <h2>Leave Requests</h2>
-
-      {leaves.length === 0 ? (
-        <p>No leave requests found.</p>
-      ) : (
-        leaves.map((leave) => (
-          <div key={leave.id}>
-            <p>Reason: {leave.reason}</p>
-            <p>From: {leave.fromDate}</p>
-            <p>To: {leave.toDate}</p>
-
-            <p style={getStatusStyle(leave.status)}>
-              Status: {leave.status}
+            <p className="mb-2">
+              <strong>From:</strong> {leave.fromDate}
             </p>
 
-            {leave.status === 'Pending' && (
-              <>
+            <p className="mb-2">
+              <strong>To:</strong> {leave.toDate}
+            </p>
+
+            <p className="mb-4">
+              <strong>Status:</strong>
+
+              <span
+                className={`ml-2 font-semibold ${
+                  leave.status === "Approved"
+                    ? "text-green-600"
+                    : leave.status === "Rejected"
+                    ? "text-red-600"
+                    : "text-orange-500"
+                }`}
+              >
+                {leave.status}
+              </span>
+            </p>
+
+            {leave.status === "Pending" && (
+              <div className="flex gap-3">
                 <button
                   onClick={() =>
                     dispatch(approveLeave(leave.id))
                   }
+                  className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
                 >
                   Approve
                 </button>
@@ -60,18 +71,18 @@ const AdminLeaves = () => {
                   onClick={() =>
                     dispatch(rejectLeave(leave.id))
                   }
+                  className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition"
                 >
                   Reject
                 </button>
-              </>
+              </div>
             )}
-
-            <hr />
           </div>
-        ))
-      )}
-    </div>
-  );
+        ))}
+      </div>
+    )}
+  </div>
+);
 };
 
 export default AdminLeaves;

@@ -12,18 +12,52 @@ const EmployeeDashboard = () => {
   const pendingLeaves = leaves.filter(l => l.status === "Pending").length;
 
   return (
-    <div>
-      <h2>Employee Dashboard</h2>
+  <div>
+    <h1 className="text-3xl font-bold mb-6">
+      Employee Dashboard
+    </h1>
 
-      <p>My Tasks (Completed): {completedTasks}</p>
-      <p>My Tasks (Pending): {pendingTasks}</p>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-      <hr />
+      <div className="bg-green-100 p-5 rounded-xl shadow">
+        <h2 className="text-lg font-semibold">
+          Completed Tasks
+        </h2>
+        <p className="text-3xl font-bold mt-2">
+          {completedTasks}
+        </p>
+      </div>
 
-      <p>My Leaves (Approved): {approvedLeaves}</p>
-      <p>My Leaves (Pending): {pendingLeaves}</p>
+      <div className="bg-yellow-100 p-5 rounded-xl shadow">
+        <h2 className="text-lg font-semibold">
+          Pending Tasks
+        </h2>
+        <p className="text-3xl font-bold mt-2">
+          {pendingTasks}
+        </p>
+      </div>
+
+      <div className="bg-blue-100 p-5 rounded-xl shadow">
+        <h2 className="text-lg font-semibold">
+          Approved Leaves
+        </h2>
+        <p className="text-3xl font-bold mt-2">
+          {approvedLeaves}
+        </p>
+      </div>
+
+      <div className="bg-orange-100 p-5 rounded-xl shadow">
+        <h2 className="text-lg font-semibold">
+          Pending Leaves
+        </h2>
+        <p className="text-3xl font-bold mt-2">
+          {pendingLeaves}
+        </p>
+      </div>
+
     </div>
-  );
+  </div>
+);
 };
 
 export default EmployeeDashboard;
