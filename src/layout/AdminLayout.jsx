@@ -42,6 +42,18 @@ const AdminLayout = () => {
           >
             Tasks
           </NavLink>
+          <NavLink
+            to="employees"
+            className={({ isActive }) =>
+            `px-3 py-2 rounded ${
+            isActive
+            ? "bg-blue-600 text-white"
+            : "hover:bg-slate-700"
+          }`
+        }
+    >
+  Employees
+</NavLink>
 
           <NavLink
             to="leaves"

@@ -13,6 +13,7 @@ import AdminLayout from '../layout/AdminLayout';
 import AdminDashboard from '../pages/admin/AdminDashboard';
 import AdminLeaves from '../pages/admin/AdminLeaves';
 import AdminTasks from '../pages/admin/AdminTasks';
+import Employees from '../pages/admin/Employees'
 
 const AppRoutes = () => {
   return (
@@ -31,6 +32,7 @@ const AppRoutes = () => {
         <Route path='/admin' element={<AdminLayout />}>
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="leaves" element={<AdminLeaves />} />
+          <Route path="employees" element={<Employees />} />
           <Route path="tasks" element={<AdminTasks />} />
         </Route>
       </Route>
