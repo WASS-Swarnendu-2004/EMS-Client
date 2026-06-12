@@ -1,45 +1,42 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-
-const loadTasks = () => {
-  try {
-    const data = localStorage.getItem('tasks')
-    return data ? JSON.parse(data) : []
-  } catch {
-    return []
-  }
-}
-
-const saveTasks = (tasks) => {
-  localStorage.setItem('tasks', JSON.stringify(tasks));
-}
-
 const taskSlice = createSlice({
   name: "task",
 
   initialState: {
-    tasks:loadTasks()
+    tasks: [],
   },
 
   reducers: {
-    addTask: (state, action) => {
-      state.tasks.push(action.payload)
-      saveTasks(state.tasks)
+    setTasks: (state, action) => {
+      state.tasks = action.payload;
     },
 
-    completeTask: (state, action) => {
-      const task = state.tasks.find((task) => 
-        task.id === action.payload)
-      
-      if (task) {
-        task.status = "Completed"
-        saveTasks(state.tasks)
-      }
-    }
-  }
-})
+    addTask: (state, action) => {
+      state.tasks.unshift(action.payload);
+    },
 
-export const {addTask ,completeTask
+    updateTask: (state, action) => {
+      state.tasks = state.tasks.map((task) =>
+        task._id === action.payload._id
+          ? action.payload
+          : task
+      );
+    },
+
+    deleteTask: (state, action) => {
+      state.tasks = state.tasks.filter(
+        (task) => task._id !== action.payload
+      );
+    },
+  },
+});
+
+export const {
+  setTasks,
+  addTask,
+  updateTask,
+  deleteTask,
 } = taskSlice.actions;
 
 export default taskSlice.reducer;

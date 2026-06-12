@@ -8,6 +8,7 @@ const Employees = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    password:"",
     department: "",
   });
 
@@ -83,6 +84,7 @@ const Employees = () => {
     setFormData({
       name: employee.name || "",
       email: employee.email || "",
+      password: employee.password || "",
       department:
         employee.department || "",
     });
@@ -398,6 +400,19 @@ const Employees = () => {
                 }
                 className="w-full border p-3 rounded"
               />
+
+              <input
+                type="password"
+                placeholder="Password"
+                value={formData.password}
+                    onChange={(e) =>
+                          setFormData({
+                          ...formData,
+                          password: e.target.value,
+                        })
+            }
+              className="w-full border p-3 rounded"
+        />
 
               <input
                 type="text"

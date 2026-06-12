@@ -1,7 +1,7 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
 import Login from '../pages/auth/Login'
-import Register from '../pages/auth/Register'
+// import Register from '../pages/auth/Register'
 import ProtectedRoutes from './ProtectedRoutes'
 import EmployeeDashboard from '../pages/employee/EmployeeDashboard'
 import MyTasks from '../pages/employee/MyTasks'
@@ -20,7 +20,7 @@ const AppRoutes = () => {
       <Routes> 
         <Route path='/' element={<Login />} />
         <Route path='/login' element={<Login />} />
-        <Route path='/register' element={<Register />} />
+        {/* <Route path='/register' element={<Register />} /> */}
        <Route element={<ProtectedRoutes />}>
          <Route path='/employee' element={<EmployeeLayout />}>
            <Route path="dashboard" element={<EmployeeDashboard />} />

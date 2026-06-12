@@ -195,7 +195,7 @@ const Login = () => {
           </button>
         </form>
 
-        <p
+        {/* <p
           className="
           text-center
           text-gray-300
@@ -214,7 +214,7 @@ const Login = () => {
           >
             Register
           </Link>
-        </p>
+        </p> */}
       </div>
     </div>
   );

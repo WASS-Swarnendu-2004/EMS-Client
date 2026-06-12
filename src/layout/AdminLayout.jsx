@@ -24,7 +24,7 @@ const AdminLayout = () => {
         />
       )}
 
-      {/* Sidebar */}
+      
       <div
         className={`
         fixed md:static top-0 left-0 h-screen w-64
@@ -117,9 +117,9 @@ const AdminLayout = () => {
         </button>
       </div>
 
-      {/* Main Content */}
+     
       <div className="flex-1">
-        {/* Mobile Header */}
+        
         <div className="md:hidden bg-white shadow px-4 py-4 flex items-center">
           <button
             onClick={() =>
