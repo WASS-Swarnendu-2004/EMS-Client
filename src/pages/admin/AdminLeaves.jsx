@@ -1,88 +1,113 @@
-import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import {approveLeave,rejectLeave} from '../../redux/slices/leaveSlice.js';
+import React, { useEffect, useState } from "react";
+import api from "../../api/axios";
 
 const AdminLeaves = () => {
-  const dispatch = useDispatch();
+  const [leaves, setLeaves] = useState([]);
 
-  const leaves = useSelector(
-    (state) => state.leave.leaves
-  );
+  const fetchLeaves = async () => {
+    const res = await api.get("/api/leaves");
+    setLeaves(res.data);
+  };
 
-return (
-  <div>
-    <h1 className="text-3xl font-bold mb-6">
-      Leave Requests
-    </h1>
+  const approve = async (id) => {
+    await api.put(`/api/leaves/approve/${id}`);
+    fetchLeaves();
+  };
 
-    {leaves.length === 0 ? (
-      <div className="bg-white rounded-xl shadow p-6">
-        <p className="text-gray-500">
-          No leave requests found.
-        </p>
-      </div>
-    ) : (
-      <div className="space-y-4">
-        {leaves.map((leave) => (
-          <div
-            key={leave.id}
-            className="bg-white rounded-xl shadow p-5"
-          >
-            <h3 className="text-lg font-semibold mb-3">
-              {leave.reason}
-            </h3>
+  useEffect(() => {
+    fetchLeaves();
+  }, []);
 
-            <p className="mb-2">
-              <strong>From:</strong> {leave.fromDate}
-            </p>
+  const formatDate = (dateString) => {
+  const date = new Date(dateString);
 
-            <p className="mb-2">
-              <strong>To:</strong> {leave.toDate}
-            </p>
+  return date.toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+};
 
-            <p className="mb-4">
-              <strong>Status:</strong>
+  const statusColor = (status) => {
+    switch (status) {
+      case "Approved":
+        return "bg-green-100 text-green-700";
+      case "Rejected":
+        return "bg-red-100 text-red-700";
+      default:
+        return "bg-yellow-100 text-yellow-700";
+    }
+  };
 
-              <span
-                className={`ml-2 font-semibold ${
-                  leave.status === "Approved"
-                    ? "text-green-600"
-                    : leave.status === "Rejected"
-                    ? "text-red-600"
-                    : "text-orange-500"
-                }`}
-              >
-                {leave.status}
-              </span>
-            </p>
+  return (
+    <div className="min-h-screen bg-gray-50 p-6">
 
-            {leave.status === "Pending" && (
-              <div className="flex gap-3">
-                <button
-                  onClick={() =>
-                    dispatch(approveLeave(leave.id))
-                  }
-                  className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
+      <div className="max-w-5xl mx-auto">
+
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold text-gray-800">
+            Leave Management (Admin)
+          </h1>
+          <p className="text-gray-500">
+            Approve or manage employee leave requests
+          </p>
+        </div>
+
+        <div className="grid gap-4">
+
+          {leaves.map((leave) => (
+            <div
+              key={leave._id}
+              className="bg-white p-5 rounded-2xl shadow border hover:shadow-lg transition"
+            >
+
+              <div className="flex justify-between items-center">
+
+                <div>
+                  <h2 className="font-semibold text-gray-800">
+                    {leave.reason}
+                  </h2>
+
+                  <p className="text-gray-500     text-sm">{formatDate(leave. fromDate)} → {formatDate(leave.  toDate)}
+                  </p>
+                </div>
+
+                <span
+                  className={`px-3 py-1 rounded-full text-sm font-medium ${statusColor(
+                    leave.status
+                  )}`}
                 >
-                  Approve
-                </button>
+                  {leave.status}
+                </span>
 
-                <button
-                  onClick={() =>
-                    dispatch(rejectLeave(leave.id))
-                  }
-                  className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition"
-                >
-                  Reject
-                </button>
               </div>
-            )}
-          </div>
-        ))}
+
+              {leave.status === "Pending" && (
+                <div className="mt-4 flex gap-3">
+
+                  <button
+                    onClick={() => approve(leave._id)}
+                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl transition"
+                  >
+                    Approve
+                  </button>
+
+                  <button
+                    className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl transition"
+                  >
+                    Reject
+                  </button>
+
+                </div>
+              )}
+
+            </div>
+          ))}
+
+        </div>
       </div>
-    )}
-  </div>
-);
+    </div>
+  );
 };
 
 export default AdminLeaves;

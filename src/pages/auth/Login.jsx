@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { Eye, EyeOff } from "lucide-react";
 import api from "../../api/axios";
 
 const Login = () => {
@@ -13,6 +14,9 @@ const Login = () => {
   const [loading, setLoading] =
     useState(false);
 
+  const [showPassword, setShowPassword] =useState(false);
+  
+  
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -152,29 +156,59 @@ const Login = () => {
             required
           />
 
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={
-              formData.password
-            }
-            onChange={
-              handleChange
-            }
-            className="
-            w-full
-            p-4
-            rounded-xl
-            bg-white/20
-            text-white
-            placeholder-gray-300
-            border
-            border-white/20
-            focus:outline-none
-            "
-            required
-          />
+          <div className="relative">
+  <input
+    type={
+      showPassword
+        ? "text"
+        : "password"
+    }
+    name="password"
+    placeholder="Password"
+    value={
+      formData.password
+    }
+    onChange={
+      handleChange
+    }
+    className="
+    w-full
+    p-4
+    pr-12
+    rounded-xl
+    bg-white/20
+    text-white
+    placeholder-gray-300
+    border
+    border-white/20
+    focus:outline-none
+    "
+    required
+  />
+
+  <button
+    type="button"
+    onClick={() =>
+      setShowPassword(
+        !showPassword
+      )
+    }
+    className="
+    absolute
+    right-4
+    top-1/2
+    -translate-y-1/2
+    text-gray-300
+    hover:text-white
+    "
+  >
+    {showPassword ? (
+      <EyeOff size={20} />
+    ) : (
+      <Eye size={20} />
+    )}
+  </button>
+</div>
 
           <button
             disabled={loading}

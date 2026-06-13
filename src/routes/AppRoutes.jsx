@@ -14,6 +14,10 @@ import AdminDashboard from '../pages/admin/AdminDashboard';
 import AdminLeaves from '../pages/admin/AdminLeaves';
 import AdminTasks from '../pages/admin/AdminTasks';
 import Employees from '../pages/admin/Employees'
+import ApplyWFH from "../pages/employee/ApplyWFH";
+import WFHHistory from "../pages/employee/WFHHistory";
+import AdminWFH from "../pages/admin/AdminWFH";
+import DailyWorkLog from '../pages/employee/DailyWorkLog'
 
 const AppRoutes = () => {
   return (
@@ -24,15 +28,19 @@ const AppRoutes = () => {
        <Route element={<ProtectedRoutes />}>
          <Route path='/employee' element={<EmployeeLayout />}>
            <Route path="dashboard" element={<EmployeeDashboard />} />
-           <Route path="mytasks" element={<MyTasks/>} />
+          <Route path="mytasks" element={<MyTasks />} />
+          <Route path='dailyworklog' element={<DailyWorkLog />} />
            <Route path="applyleave" element={<ApplyLeave/>} />
-           <Route path="leavehistory" element={<LeaveHistory />} />
+          <Route path="leavehistory" element={<LeaveHistory />} />
+          <Route path="applywfh" element={<ApplyWFH />} />
+          <Route path="wfhhistory" element={<WFHHistory />} />
            <Route path="profile" element={<Profile />} />
         </Route>
         <Route path='/admin' element={<AdminLayout />}>
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="leaves" element={<AdminLeaves />} />
           <Route path="employees" element={<Employees />} />
+          <Route path="wfh" element={<AdminWFH />} />
           <Route path="tasks" element={<AdminTasks />} />
         </Route>
       </Route>

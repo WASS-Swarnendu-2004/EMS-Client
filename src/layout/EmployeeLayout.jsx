@@ -57,6 +57,10 @@ const EmployeeLayout = () => {
             My Tasks
           </NavLink>
 
+          <NavLink to="dailyworklog"onClick={closeSidebar}className={({ isActive }) =>`px-3 py-2 rounded ${isActive? "bg-blue-600": "hover:bg-slate-700"}`}>
+            Daily Work Log
+          </NavLink>
+
           <NavLink to="applyleave" onClick={closeSidebar} className={({isActive}) => `px-3 py-2 rounded ${isActive ? "bg-blue-600" : "hover:bg-slate-700"}`}>
             Apply Leave
           </NavLink>
@@ -64,6 +68,16 @@ const EmployeeLayout = () => {
           <NavLink to="leavehistory" onClick={closeSidebar} className={({isActive}) => `px-3 py-2 rounded ${isActive ? "bg-blue-600" : "hover:bg-slate-700"}`}>
             Leave History
           </NavLink>
+
+          <NavLink to="applywfh" onClick={closeSidebar}className={({isActive}) =>
+          `px-3 py-2 rounded ${isActive? "bg-blue-600": "hover:bg-slate-700"}`}>
+             Apply WFH
+          </NavLink>
+
+          <NavLink to="wfhhistory" onClick={closeSidebar}className={({isActive}) =>
+          `px-3 py-2 rounded ${isActive? "bg-blue-600": "hover:bg-slate-700"}`}>
+            WFH History
+        </NavLink>
 
           <NavLink to="profile" onClick={closeSidebar} className={({isActive}) => `px-3 py-2 rounded ${isActive ? "bg-blue-600" : "hover:bg-slate-700"}`}>
             Profile
