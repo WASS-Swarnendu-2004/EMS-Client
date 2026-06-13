@@ -2,385 +2,263 @@ import React, { useEffect, useState } from "react";
 import api from "../../api/axios";
 
 const Employees = () => {
-const [employees, setEmployees] = useState([]);
-const [search, setSearch] = useState("");
+  const [employees, setEmployees] = useState([]);
+  const [search, setSearch] = useState("");
 
-const [formData, setFormData] = useState({
-name: "",
-email: "",
-password: "",
-department: "",
-});
-
-const [showModal, setShowModal] =
-useState(false);
-
-const fetchEmployees = async () => {
-try {
-const res = await api.get(
-"/api/employees"
-);
-
-
-  setEmployees(res.data);
-} catch (err) {
-  console.log(err);
-}
-
-
-};
-
-useEffect(() => {
-fetchEmployees();
-}, []);
-
-const handleSubmit = async (e) => {
-e.preventDefault();
-
-
-try {
-  await api.post(
-    "/api/employees",
-    formData
-  );
-
-  setFormData({
+  const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
     department: "",
   });
 
-  setShowModal(false);
+  const [showModal, setShowModal] = useState(false);
 
-  fetchEmployees();
-} catch (err) {
-  console.log(err);
-  alert(
-    err?.response?.data?.message ||
-      "Failed to create employee"
+  
+  const fetchEmployees = async () => {
+    try {
+      const res = await api.get("/api/employees");
+      setEmployees(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchEmployees();
+  }, []);
+
+  
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      await api.post("/api/employees", formData);
+
+      setFormData({
+        name: "",
+        email: "",
+        password: "",
+        department: "",
+      });
+
+      setShowModal(false);
+      fetchEmployees();
+    } catch (err) {
+      console.log(err);
+      alert(err?.response?.data?.message || "Failed to create employee");
+    }
+  };
+
+  
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this employee?"
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      await api.delete(`/api/employees/${id}`);
+
+      // remove from UI instantly (no reload)
+      setEmployees((prev) =>
+        prev.filter((emp) => emp._id !== id)
+      );
+
+      alert("Employee deleted successfully");
+    } catch (err) {
+      console.log(err);
+      alert(
+        err?.response?.data?.message || "Failed to delete employee"
+      );
+    }
+  };
+
+  
+  const filteredEmployees = employees.filter((employee) =>
+    `${employee.userId?.name || ""} ${employee.userId?.email || ""}`
+      .toLowerCase()
+      .includes(search.toLowerCase())
   );
-}
 
+  return (
+    <div className="space-y-6">
 
-};
+      {/* HEADER */}
+      <div className="flex flex-col md:flex-row justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-slate-800">
+            Employee Management
+          </h1>
+          <p className="text-gray-500">Manage all employees</p>
+        </div>
 
-const filteredEmployees =
-employees.filter((employee) =>
-`${employee.userId?.name || ""} ${
-        employee.userId?.email || ""
-      }`
-.toLowerCase()
-.includes(search.toLowerCase())
-);
+        <button
+          onClick={() => setShowModal(true)}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl"
+        >
+          + Add Employee
+        </button>
+      </div>
 
-return ( <div className="space-y-6">
-{/* Header */}
+      
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+        <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-5 rounded-2xl">
+          <p>Total Employees</p>
+          <h2 className="text-3xl font-bold">{employees.length}</h2>
+        </div>
 
+        <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-5 rounded-2xl">
+          <p>Active Employees</p>
+          <h2 className="text-3xl font-bold">{employees.length}</h2>
+        </div>
+      </div>
 
-  <div className="flex flex-col md:flex-row justify-between gap-4">
-    <div>
-      <h1 className="text-3xl font-bold text-slate-800">
-        Employee Management
-      </h1>
-
-      <p className="text-gray-500">
-        Manage all employees
-      </p>
-    </div>
-
-    <button
-      onClick={() =>
-        setShowModal(true)
-      }
-      className="
-      bg-blue-600
-      hover:bg-blue-700
-      text-white
-      px-5
-      py-3
-      rounded-xl
-      "
-    >
-      + Add Employee
-    </button>
-  </div>
-
-  {/* Stats */}
-
-  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-    <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-5 rounded-2xl">
-      <p>Total Employees</p>
-
-      <h2 className="text-3xl font-bold">
-        {employees.length}
-      </h2>
-    </div>
-
-
+      <input
+        type="text"
+        placeholder="Search employee..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className="w-full md:w-80 border p-3 rounded-xl"
+      />
 
     
-
-    <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-5 rounded-2xl">
-      <p>Active Employees</p>
-
-      <h2 className="text-3xl font-bold">
-        {employees.length}
-      </h2>
-    </div>
-  </div>
-
-  {/* Search */}
-
-  <input
-    type="text"
-    placeholder="Search employee..."
-    value={search}
-    onChange={(e) =>
-      setSearch(e.target.value)
-    }
-    className="
-    w-full
-    md:w-80
-    border
-    p-3
-    rounded-xl
-    "
-  />
-
-  {/* Desktop Table */}
-
-  <div className="hidden md:block bg-white rounded-2xl shadow overflow-hidden">
-    <table className="w-full">
-      <thead className="bg-slate-100">
-        <tr>
-          <th className="p-4 text-left">
-            Name
-          </th>
-
-          <th className="p-4 text-left">
-            Email
-          </th>
-
-          <th className="p-4 text-left">
-            Role
-          </th>
-
-          <th className="p-4 text-left">
-            Department
-          </th>
-        </tr>
-      </thead>
-
-      <tbody>
-        {filteredEmployees.map(
-          (employee) => (
-            <tr
-              key={employee._id}
-              className="border-b"
-            >
-              <td className="p-4">
-                {employee.userId
-                  ?.name || "N/A"}
-              </td>
-
-              <td className="p-4">
-                {employee.userId
-                  ?.email || "N/A"}
-              </td>
-
-              <td className="p-4">
-                {employee.userId
-                  ?.role || "N/A"}
-              </td>
-
-              <td className="p-4">
-                {employee.department ||
-                  "N/A"}
-              </td>
+      <div className="hidden md:block bg-white rounded-2xl shadow overflow-hidden">
+        <table className="w-full">
+          <thead className="bg-slate-100">
+            <tr>
+              <th className="p-4 text-left">Name</th>
+              <th className="p-4 text-left">Email</th>
+              <th className="p-4 text-left">Role</th>
+              <th className="p-4 text-left">Department</th>
+              <th className="p-4 text-left">Action</th>
             </tr>
-          )
-        )}
-      </tbody>
-    </table>
-  </div>
+          </thead>
 
-  {/* Mobile Cards */}
+          <tbody>
+            {filteredEmployees.map((employee) => (
+              <tr key={employee._id} className="border-b">
+                <td className="p-4">{employee.userId?.name || "N/A"}</td>
+                <td className="p-4">{employee.userId?.email || "N/A"}</td>
+                <td className="p-4">{employee.userId?.role || "N/A"}</td>
+                <td className="p-4">{employee.department || "N/A"}</td>
 
-  <div className="md:hidden space-y-4">
-    {filteredEmployees.map(
-      (employee) => (
-        <div
-          key={employee._id}
-          className="bg-white rounded-xl p-4 shadow"
-        >
-          <h3 className="font-bold text-lg">
-            {employee.userId
-              ?.name || "N/A"}
-          </h3>
+                
+                <td className="p-4">
+                  <button
+                    onClick={() => handleDelete(employee._id)}
+                    className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
-          <p>
-            {employee.userId
-              ?.email || "N/A"}
-          </p>
+    
+      <div className="md:hidden space-y-4">
+        {filteredEmployees.map((employee) => (
+          <div key={employee._id} className="bg-white rounded-xl p-4 shadow">
+            <h3 className="font-bold text-lg">
+              {employee.userId?.name || "N/A"}
+            </h3>
 
-          <p>
-            Role:{" "}
-            {
-              employee.userId
-                ?.role
-            }
-          </p>
+            <p>{employee.userId?.email || "N/A"}</p>
+            <p>Role: {employee.userId?.role}</p>
+            <p>Department: {employee.department}</p>
 
-          <p>
-            Department:{" "}
-            {
-              employee.department
-            }
-          </p>
-        </div>
-      )
-    )}
-  </div>
-
-  {/* Modal */}
-
-  {showModal && (
-    <div className="fixed inset-0 bg-black/50 flex justify-center items-center p-4">
-      <div className="bg-white rounded-2xl p-6 w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-4">
-          Add Employee
-        </h2>
-
-        <form
-          onSubmit={
-            handleSubmit
-          }
-          className="space-y-4"
-        >
-          <input
-            type="text"
-            placeholder="Name"
-            value={
-              formData.name
-            }
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                name:
-                  e.target.value,
-              })
-            }
-            className="w-full border p-3 rounded"
-            required
-          />
-
-          <input
-            type="email"
-            placeholder="Email"
-            value={
-              formData.email
-            }
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                email:
-                  e.target.value,
-              })
-            }
-            className="w-full border p-3 rounded"
-            required
-          />
-
-          <input
-            type="password"
-            placeholder="Password"
-            value={
-              formData.password
-            }
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                password:
-                  e.target.value,
-              })
-            }
-            className="w-full border p-3 rounded"
-            required
-          />
-
-          <select
-            value={
-              formData.department
-            }
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                department:
-                  e.target.value,
-              })
-            }
-            className="w-full border p-3 rounded"
-            required
-          >
-            <option value="">
-              Select Department
-            </option>
-
-            <option value="IT">
-              IT
-            </option>
-
-            <option value="HR">
-              HR
-            </option>
-
-            <option value="Finance">
-              Finance
-            </option>
-
-            <option value="Marketing">
-              Marketing
-            </option>
-          </select>
-
-          <div className="flex gap-3">
+            
             <button
-              className="
-              flex-1
-              bg-blue-600
-              text-white
-              py-3
-              rounded
-              "
+              onClick={() => handleDelete(employee._id)}
+              className="mt-3 bg-red-500 text-white px-3 py-1 rounded-lg"
             >
-              Save
-            </button>
-
-            <button
-              type="button"
-              onClick={() =>
-                setShowModal(
-                  false
-                )
-              }
-              className="
-              flex-1
-              bg-gray-300
-              py-3
-              rounded
-              "
-            >
-              Cancel
+              Delete
             </button>
           </div>
-        </form>
+        ))}
       </div>
-    </div>
-  )}
-</div>
 
-);
+      
+      {showModal && (
+        <div className="fixed inset-0 bg-black/50 flex justify-center items-center p-4">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-md">
+            <h2 className="text-2xl font-bold mb-4">Add Employee</h2>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+
+              <input
+                type="text"
+                placeholder="Name"
+                value={formData.name}
+                onChange={(e) =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
+                className="w-full border p-3 rounded"
+                required
+              />
+
+              <input
+                type="email"
+                placeholder="Email"
+                value={formData.email}
+                onChange={(e) =>
+                  setFormData({ ...formData, email: e.target.value })
+                }
+                className="w-full border p-3 rounded"
+                required
+              />
+
+              <input
+                type="password"
+                placeholder="Password"
+                value={formData.password}
+                onChange={(e) =>
+                  setFormData({ ...formData, password: e.target.value })
+                }
+                className="w-full border p-3 rounded"
+                required
+              />
+
+              <select
+                value={formData.department}
+                onChange={(e) =>
+                  setFormData({ ...formData, department: e.target.value })
+                }
+                className="w-full border p-3 rounded"
+                required
+              >
+                <option value="">Select Department</option>
+                <option value="IT">IT</option>
+                <option value="HR">HR</option>
+                <option value="Finance">Finance</option>
+                <option value="Marketing">Marketing</option>
+              </select>
+
+              <div className="flex gap-3">
+                <button className="flex-1 bg-blue-600 text-white py-3 rounded">
+                  Save
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setShowModal(false)}
+                  className="flex-1 bg-gray-300 py-3 rounded"
+                >
+                  Cancel
+                </button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
 };
 
 export default Employees;
