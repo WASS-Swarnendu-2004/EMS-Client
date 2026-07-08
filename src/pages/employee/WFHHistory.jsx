@@ -34,6 +34,19 @@ const WFHHistory = () => {
     }
   };
 
+  const getStatusIcon = (status) => {
+  switch (status?.toLowerCase()) {
+    case "approved":
+      return "🟢";
+
+    case "rejected":
+      return "🔴";
+
+    default:
+      return "🟡";
+  }
+};
+
   return (
     <div className="space-y-6">
     
@@ -47,6 +60,62 @@ const WFHHistory = () => {
           View all your Work From Home requests
         </p>
       </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
+  <div className="bg-white rounded-2xl shadow p-5 border">
+    <p className="text-gray-500 text-sm">
+      Total Requests
+    </p>
+
+    <h2 className="text-3xl font-bold mt-2">
+      {wfhHistory.length}
+    </h2>
+  </div>
+
+  <div className="bg-yellow-50 rounded-2xl shadow p-5 border border-yellow-200">
+    <p className="text-yellow-700 text-sm">
+      Pending
+    </p>
+
+    <h2 className="text-3xl font-bold text-yellow-700 mt-2">
+      {
+        wfhHistory.filter(
+          (item) => item.status === "Pending"
+        ).length
+      }
+    </h2>
+  </div>
+
+  <div className="bg-green-50 rounded-2xl shadow p-5 border border-green-200">
+    <p className="text-green-700 text-sm">
+      Approved
+    </p>
+
+    <h2 className="text-3xl font-bold text-green-700 mt-2">
+      {
+        wfhHistory.filter(
+          (item) => item.status === "Approved"
+        ).length
+      }
+    </h2>
+  </div>
+
+  <div className="bg-red-50 rounded-2xl shadow p-5 border border-red-200">
+    <p className="text-red-700 text-sm">
+      Rejected
+    </p>
+
+    <h2 className="text-3xl font-bold text-red-700 mt-2">
+      {
+        wfhHistory.filter(
+          (item) => item.status === "Rejected"
+        ).length
+      }
+    </h2>
+  </div>
+
+</div>
 
 
       {loading ? (
@@ -63,108 +132,104 @@ const WFHHistory = () => {
         </div>
       ) : (
         <>
-          
+         <div className="grid gap-5">
 
-          <div className="hidden md:block bg-white rounded-2xl shadow overflow-hidden">
-            <table className="w-full">
-              <thead className="bg-slate-100">
-                <tr>
-                  <th className="p-4 text-left">
-                    Start Date
-                  </th>
+  {wfhHistory.map((item) => (
 
-                  <th className="p-4 text-left">
-                    End Date
-                  </th>
+    <div
+      key={item._id}
+      className="
+      bg-white
+      rounded-2xl
+      shadow
+      border
+      p-5
+      hover:shadow-lg
+      transition
+      "
+    >
 
-                  <th className="p-4 text-left">
-                    Status
-                  </th>
+      <div className="flex justify-between items-center">
 
-                  <th className="p-4 text-left">
-                    Applied On
-                  </th>
-                </tr>
-              </thead>
+        <div>
 
-              <tbody>
-                {wfhHistory.map((item) => (
-                  <tr
-                    key={item._id}
-                    className="border-b"
-                  >
-                    <td className="p-4">
-                      {item.startDate
-                        ? new Date(
-                            item.startDate
-                          ).toLocaleDateString()
-                        : "N/A"}
-                    </td>
+          <h2 className="text-lg font-bold text-slate-800">
+  {getStatusIcon(item.status)} {item.status} WFH Request
+</h2>
+          <p className="text-sm text-gray-500">
+            Request ID:
+          {item.reason && (
+  <div className="mt-4">
+    <p className="text-sm text-gray-500">
+      Reason
+    </p>
 
-                    <td className="p-4">
-                      {item.endDate
-                        ? new Date(
-                            item.endDate
-                          ).toLocaleDateString()
-                        : "N/A"}
-                    </td>
+    <p className="font-medium text-slate-700">
+      {item.reason}
+    </p>
+  </div>
+)}
+            {" "}
+            {item._id.slice(-6).toUpperCase()}
+          </p>
 
-                    <td className="p-4">
-                      <span
-                        className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
-                          item.status
-                        )}`}
-                      >
-                        {item.status}
-                      </span>
-                    </td>
+        </div>
 
-                    <td className="p-4">
-                      {new Date(
-                        item.createdAt
-                      ).toLocaleDateString()}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+        <span
+          className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
+            item.status
+          )}`}
+        >
+          {item.status}
+        </span>
 
-          
+      </div>
 
-          <div className="md:hidden space-y-4">
-            {wfhHistory.map((item) => (
-              <div
-                key={item._id}
-                className="bg-white rounded-2xl shadow p-4"
-              >
-                <div className="flex justify-between items-center mb-3">
-                  <h3 className="font-semibold">
-                    WFH Request
-                  </h3>
+      <div className="mt-5 grid md:grid-cols-2 gap-4">
 
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                      item.status
-                    )}`}
-                  >
-                    {item.status}
-                  </span>
-                </div>
+        <div>
 
-                <div className="space-y-2 text-sm">
-                  <p>
-                    <strong>
-                      Applied On:
-                    </strong>{" "}
-                    {new Date(
-                      item.createdAt
-                    ).toLocaleDateString()}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
+          <p className="text-gray-500 text-sm">
+            Applied On
+          </p>
+
+          <p className="font-medium text-slate-700">
+            {new Date(
+              item.createdAt
+            ).toLocaleDateString("en-IN", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            })}
+          </p>
+
+        </div>
+
+        <div>
+
+          <p className="text-gray-500 text-sm">
+            Last Updated
+          </p>
+
+          <p className="font-medium text-slate-700">
+            {new Date(
+              item.updatedAt
+            ).toLocaleDateString("en-IN", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            })}
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  ))}
+
+</div>       
         </>
       )}
     </div>

@@ -22,31 +22,38 @@ const AdminWFH = () => {
     fetchWFHRequests();
   }, []);
 
-  const updateStatus = async (
-    id,
-    status
-  ) => {
-    try {
-      await api.put(
-        `/api/wfh/approve/${id}`,
-        { status }
-      );
+ const updateStatus = async (
+  id,
+  status
+) => {
+  try {
 
-      alert(
-        `WFH Request ${status}`
-      );
+    const endpoint =
+      status === "Approved"
+        ? `/api/wfh/approve/${id}`
+        : `/api/wfh/reject/${id}`;
 
-      fetchWFHRequests();
-    } catch (error) {
-      console.log(error);
+    const res = await api.put(endpoint);
 
-      alert(
-        error?.response?.data
-          ?.message ||
-          "Failed to update status"
-      );
-    }
-  };
+    alert(
+      res.data.message ||
+      `WFH Request ${status}`
+    );
+
+    fetchWFHRequests();
+
+  } catch (error) {
+
+    console.log(error);
+
+    alert(
+      error?.response?.data?.message ||
+      "Failed to update status"
+    );
+
+  }
+};
+  
 
   const getStatusColor = (
     status
@@ -90,246 +97,237 @@ const AdminWFH = () => {
 
       {/* Stats */}
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-blue-600 text-white p-5 rounded-2xl">
-          <p>Total Requests</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 
-          <h2 className="text-3xl font-bold">
-            {requests.length}
+  <div className="bg-white rounded-2xl shadow p-5 border">
+    <p className="text-gray-500 text-sm">
+      Total Requests
+    </p>
+
+    <h2 className="text-3xl font-bold mt-2">
+      {requests.length}
+    </h2>
+  </div>
+
+  <div className="bg-yellow-50 rounded-2xl shadow p-5 border border-yellow-200">
+    <p className="text-yellow-700 text-sm">
+      Pending
+    </p>
+
+    <h2 className="text-3xl font-bold text-yellow-700 mt-2">
+      {
+        requests.filter(
+          (request) =>
+            request.status === "Pending"
+        ).length
+      }
+    </h2>
+  </div>
+
+  <div className="bg-green-50 rounded-2xl shadow p-5 border border-green-200">
+    <p className="text-green-700 text-sm">
+      Approved
+    </p>
+
+    <h2 className="text-3xl font-bold text-green-700 mt-2">
+      {
+        requests.filter(
+          (request) =>
+            request.status === "Approved"
+        ).length
+      }
+    </h2>
+  </div>
+
+  <div className="bg-red-50 rounded-2xl shadow p-5 border border-red-200">
+    <p className="text-red-700 text-sm">
+      Rejected
+    </p>
+
+    <h2 className="text-3xl font-bold text-red-700 mt-2">
+      {
+        requests.filter(
+          (request) =>
+            request.status === "Rejected"
+        ).length
+      }
+    </h2>
+  </div>
+
+</div>
+
+<div className="grid gap-5">
+
+  {requests.map((request) => (
+
+    <div
+      key={request._id}
+      className="
+      bg-white
+      rounded-2xl
+      shadow
+      border
+      p-6
+      hover:shadow-lg
+      transition
+      "
+    >
+
+      {/* Top */}
+
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+
+        <div>
+
+          <h2 className="text-xl font-bold text-slate-800">
+            {request.employeeId?.name || "Unknown Employee"}
           </h2>
+
+          <p className="text-gray-500">
+            {request.employeeId?.email || "No Email"}
+          </p>
+
         </div>
 
-        <div className="bg-green-600 text-white p-5 rounded-2xl">
-          <p>Approved</p>
+        <span
+          className={`px-4 py-2 rounded-full text-sm font-medium w-fit ${getStatusColor(
+            request.status
+          )}`}
+        >
+          {request.status}
+        </span>
 
-          <h2 className="text-3xl font-bold">
-            {
-              requests.filter(
-                (r) =>
-                  r.status?.toLowerCase() ===
-                  "approved"
-              ).length
-            }
-          </h2>
-        </div>
-
-        <div className="bg-yellow-500 text-white p-5 rounded-2xl">
-          <p>Pending</p>
-
-          <h2 className="text-3xl font-bold">
-            {
-              requests.filter(
-                (r) =>
-                  r.status?.toLowerCase() ===
-                  "pending"
-              ).length
-            }
-          </h2>
-        </div>
       </div>
 
-      {/* Desktop Table */}
+      {/* Details */}
 
-      <div className="hidden md:block bg-white rounded-2xl shadow overflow-hidden">
-        <table className="w-full">
-          <thead className="bg-slate-100">
-            <tr>
-              <th className="p-4 text-left">
-                Employee
-              </th>
+      <div className="grid md:grid-cols-2 gap-4 mt-6">
 
-              <th className="p-4 text-left">
-                Email
-              </th>
+        <div>
 
-              <th className="p-4 text-left">
-                Start Date
-              </th>
+          <p className="text-sm text-gray-500">
+            Applied On
+          </p>
 
-              <th className="p-4 text-left">
-                End Date
-              </th>
+          <p className="font-medium">
+            {new Date(
+              request.createdAt
+            ).toLocaleDateString("en-IN", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            })}
+          </p>
 
-              <th className="p-4 text-left">
-                Status
-              </th>
+        </div>
 
-              <th className="p-4 text-left">
-                Action
-              </th>
-            </tr>
-          </thead>
+        <div>
 
-          <tbody>
-            {requests.map(
-              (request) => (
-                <tr
-                  key={request._id}
-                  className="border-b"
-                >
-                  <td className="p-4">
-                    {request.employeeId
-                      ?.name ||
-                      "N/A"}
-                  </td>
+          <p className="text-sm text-gray-500">
+            Last Updated
+          </p>
 
-                  <td className="p-4">
-                    {request.employeeId
-                      ?.email ||
-                      "N/A"}
-                  </td>
+          <p className="font-medium">
+            {new Date(
+              request.updatedAt
+            ).toLocaleDateString("en-IN", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            })}
+          </p>
 
-                  <td className="p-4">
-                    {request.startDate
-                      ? new Date(
-                          request.startDate
-                        ).toLocaleDateString()
-                      : "N/A"}
-                  </td>
+        </div>
 
-                  <td className="p-4">
-                    {request.endDate
-                      ? new Date(
-                          request.endDate
-                        ).toLocaleDateString()
-                      : "N/A"}
-                  </td>
+      </div>
 
-                  <td className="p-4">
-                    <span
-                      className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
-                        request.status
-                      )}`}
-                    >
-                      {request.status}
-                    </span>
-                  </td>
+      {/* WFH Duration */}
 
-                  <td className="p-4 flex gap-2">
-                    {request.status?.toLowerCase() ===
-                    "pending" ? (
-                      <>
-                        <button
-                          onClick={() =>
-                            updateStatus(
-                              request._id,
-                              "Approved"
-                            )
-                          }
-                          className="bg-green-600 text-white px-3 py-2 rounded hover:bg-green-700"
-                        >
-                          Approve
-                        </button>
+      {(request.startDate || request.endDate) && (
 
-                        <button
-                          onClick={() =>
-                            updateStatus(
-                              request._id,
-                              "Rejected"
-                            )
-                          }
-                          className="bg-red-600 text-white px-3 py-2 rounded hover:bg-red-700"
-                        >
-                          Reject
-                        </button>
-                      </>
-                    ) : (
-                      <span className="text-gray-500">
-                        Updated
-                      </span>
-                    )}
-                  </td>
-                </tr>
+        <div className="mt-5">
+
+          <p className="text-sm text-gray-500">
+            WFH Duration
+          </p>
+
+          <p className="font-medium">
+
+            {request.startDate
+              ? new Date(
+                  request.startDate
+                ).toLocaleDateString("en-IN")
+              : "N/A"}
+
+            {" "}→{" "}
+
+            {request.endDate
+              ? new Date(
+                  request.endDate
+                ).toLocaleDateString("en-IN")
+              : "N/A"}
+
+          </p>
+
+        </div>
+
+      )}
+
+      {/* Actions */}
+
+      {request.status === "Pending" && (
+
+        <div className="flex gap-3 mt-6">
+
+          <button
+            onClick={() =>
+              updateStatus(
+                request._id,
+                "Approved"
               )
-            )}
-          </tbody>
-        </table>
-      </div>
+            }
+            className="
+            bg-green-600
+            hover:bg-green-700
+            text-white
+            px-5
+            py-2
+            rounded-xl
+            "
+          >
+            Approve
+          </button>
 
-      {/* Mobile Cards */}
+          <button
+            onClick={() =>
+              updateStatus(
+                request._id,
+                "Rejected"
+              )
+            }
+            className="
+            bg-red-600
+            hover:bg-red-700
+            text-white
+            px-5
+            py-2
+            rounded-xl
+            "
+          >
+            Reject
+          </button>
 
-      <div className="md:hidden space-y-4">
-        {requests.map(
-          (request) => (
-            <div
-              key={request._id}
-              className="bg-white rounded-2xl shadow p-4"
-            >
-              <div className="flex justify-between items-center">
-                <h3 className="font-bold">
-                  {request.employeeId
-                    ?.name ||
-                    "N/A"}
-                </h3>
+        </div>
 
-                <span
-                  className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                    request.status
-                  )}`}
-                >
-                  {request.status}
-                </span>
-              </div>
+      )}
 
-              <p className="text-gray-600 mt-2">
-                {
-                  request.employeeId
-                    ?.email
-                }
-              </p>
+    </div>
 
-              <p className="mt-2 text-sm">
-                <strong>
-                  Start:
-                </strong>{" "}
-                {request.startDate
-                  ? new Date(
-                      request.startDate
-                    ).toLocaleDateString()
-                  : "N/A"}
-              </p>
+  ))}
 
-              <p className="text-sm">
-                <strong>End:</strong>{" "}
-                {request.endDate
-                  ? new Date(
-                      request.endDate
-                    ).toLocaleDateString()
-                  : "N/A"}
-              </p>
+</div>
 
-              {request.status?.toLowerCase() ===
-                "pending" && (
-                <div className="flex gap-2 mt-4">
-                  <button
-                    onClick={() =>
-                      updateStatus(
-                        request._id,
-                        "Approved"
-                      )
-                    }
-                    className="flex-1 bg-green-600 text-white py-2 rounded"
-                  >
-                    Approve
-                  </button>
-
-                  <button
-                    onClick={() =>
-                      updateStatus(
-                        request._id,
-                        "Rejected"
-                      )
-                    }
-                    className="flex-1 bg-red-600 text-white py-2 rounded"
-                  >
-                    Reject
-                  </button>
-                </div>
-              )}
-            </div>
-          )
-        )}
-      </div>
+     
     </div>
   );
 };

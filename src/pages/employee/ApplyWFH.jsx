@@ -3,14 +3,20 @@ import api from "../../api/axios";
 
 const ApplyWFH = () => {
   const [formData, setFormData] = useState({
-    startDate: "",
-    endDate: "",
+    // startDate: "",
+    // endDate: "",
+    reason: "",
   });
 
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!formData.reason.trim()) {
+      alert("Please enter a reason for WFH.")
+      return;
+    }
 
     try {
       setLoading(true);
@@ -25,8 +31,9 @@ const ApplyWFH = () => {
       console.log(res.data);
 
       setFormData({
-        startDate: "",
-        endDate: "",
+        // startDate: "",
+        // endDate: "",
+        reason:"",
       });
     } catch (error) {
       console.log(error);
@@ -63,7 +70,7 @@ const ApplyWFH = () => {
         >
          
 
-          <div>
+          {/* <div>
             <label className="block mb-2 font-medium text-slate-700">
               Start Date
             </label>
@@ -119,8 +126,36 @@ const ApplyWFH = () => {
                 focus:ring-blue-500
               "
             />
-          </div>
+          </div> */}
+          <div>
+  <label className="block mb-2 font-medium text-slate-700">
+    Reason
+  </label>
 
+  <textarea
+    rows={5}
+    placeholder="Enter the reason for Work From Home..."
+    value={formData.reason}
+    onChange={(e) =>
+      setFormData({
+        ...formData,
+        reason: e.target.value,
+      })
+    }
+    required
+    className="
+      w-full
+      border
+      border-gray-300
+      rounded-xl
+      p-3
+      focus:outline-none
+      focus:ring-2
+      focus:ring-blue-500
+      resize-none
+    "
+  />
+</div>
 
           <button
             type="submit"
@@ -143,32 +178,34 @@ const ApplyWFH = () => {
         </form>
       </div>
 
-     
-
       <div className="mt-6 bg-blue-50 border border-blue-200 rounded-2xl p-5">
-        <h3 className="font-semibold text-blue-800">
-          Note
-        </h3>
 
-        <ul className="mt-2 text-sm text-blue-700 list-disc ml-5">
-          <li>
-            Select your WFH start date.
-          </li>
+  <h3 className="text-lg font-semibold text-blue-800">
+    📌 Important Information
+  </h3>
 
-          <li>
-            Select your WFH end date.
-          </li>
+  <ul className="mt-3 space-y-2 text-sm text-blue-700 list-disc ml-5">
 
-          <li>
-            Admin approval is required.
-          </li>
+    <li>
+      Provide a clear and valid reason for your Work From Home request.
+    </li>
 
-          <li>
-            Track request status from WFH
-            History page.
-          </li>
-        </ul>
-      </div>
+    <li>
+      Every request requires admin approval before it is accepted.
+    </li>
+
+    <li>
+      You can monitor the approval status from the WFH History page.
+    </li>
+
+    <li>
+      Submitting multiple pending requests may delay approval.
+    </li>
+
+  </ul>
+
+</div>
+     
     </div>
   );
 };

@@ -14,6 +14,20 @@ const AdminLeaves = () => {
     fetchLeaves();
   };
 
+  const reject = async (id) => {
+  try {
+    await api.put(`/api/leaves/reject/${id}`);
+
+    alert("Leave Rejected");
+
+    fetchLeaves();
+  } catch (error) {
+    console.log(error);
+
+    alert("Failed To Reject Leave");
+  }
+};
+
   useEffect(() => {
     fetchLeaves();
   }, []);
@@ -26,6 +40,21 @@ const AdminLeaves = () => {
     month: "short",
     year: "numeric",
   });
+  };
+  
+  const calculateDays = (fromDate, toDate) => {
+  const start = new Date(fromDate);
+  const end = new Date(toDate);
+
+  const difference =
+    end.getTime() - start.getTime();
+
+  const days =
+    Math.floor(
+      difference / (1000 * 60 * 60 * 24)
+    ) + 1;
+
+  return days;
 };
 
   const statusColor = (status) => {
@@ -52,7 +81,61 @@ const AdminLeaves = () => {
             Approve or manage employee leave requests
           </p>
         </div>
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
 
+  <div className="bg-white rounded-2xl shadow p-5 border">
+    <p className="text-gray-500 text-sm">
+      Total Leaves
+    </p>
+
+    <h2 className="text-3xl font-bold mt-2">
+      {leaves.length}
+    </h2>
+  </div>
+
+  <div className="bg-yellow-50 rounded-2xl shadow p-5 border border-yellow-200">
+    <p className="text-yellow-700 text-sm">
+      Pending
+    </p>
+
+    <h2 className="text-3xl font-bold mt-2 text-yellow-700">
+      {
+        leaves.filter(
+          (leave) => leave.status === "Pending"
+        ).length
+      }
+    </h2>
+  </div>
+
+  <div className="bg-green-50 rounded-2xl shadow p-5 border border-green-200">
+    <p className="text-green-700 text-sm">
+      Approved
+    </p>
+
+    <h2 className="text-3xl font-bold mt-2 text-green-700">
+      {
+        leaves.filter(
+          (leave) => leave.status === "Approved"
+        ).length
+      }
+    </h2>
+  </div>
+
+  <div className="bg-red-50 rounded-2xl shadow p-5 border border-red-200">
+    <p className="text-red-700 text-sm">
+      Rejected
+    </p>
+
+    <h2 className="text-3xl font-bold mt-2 text-red-700">
+      {
+        leaves.filter(
+          (leave) => leave.status === "Rejected"
+        ).length
+      }
+    </h2>
+  </div>
+
+</div>
         <div className="grid gap-4">
 
           {leaves.map((leave) => (
@@ -64,13 +147,44 @@ const AdminLeaves = () => {
               <div className="flex justify-between items-center">
 
                 <div>
-                  <h2 className="font-semibold text-gray-800">
-                    {leave.reason}
-                  </h2>
 
-                  <p className="text-gray-500     text-sm">{formatDate(leave. fromDate)} → {formatDate(leave.  toDate)}
-                  </p>
-                </div>
+  <h2 className="text-lg font-bold text-gray-800">
+    {leave.employeeId?.name || "Unknown Employee"}
+  </h2>
+
+  <p className="text-sm text-gray-500">
+    {leave.employeeId?.email || "No Email"}
+  </p>
+
+  <div className="mt-3">
+
+    <p className="font-medium text-gray-700">
+      Reason
+    </p>
+
+    <p className="text-gray-600">
+      {leave.reason}
+    </p>
+
+  </div>
+
+  <div className="mt-3 space-y-1">
+
+  <p className="text-sm text-gray-500">
+    📅 {formatDate(leave.fromDate)} →{" "}
+    {formatDate(leave.toDate)}
+  </p>
+
+  <p className="text-sm font-medium text-blue-600">
+    ⏳ {calculateDays(
+      leave.fromDate,
+      leave.toDate
+    )} Days
+  </p>
+
+</div>
+
+</div>
 
                 <span
                   className={`px-3 py-1 rounded-full text-sm font-medium ${statusColor(
@@ -93,10 +207,19 @@ const AdminLeaves = () => {
                   </button>
 
                   <button
-                    className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl transition"
-                  >
-                    Reject
-                  </button>
+  onClick={() => reject(leave._id)}
+  className="
+  bg-red-500
+  hover:bg-red-600
+  text-white
+  px-4
+  py-2
+  rounded-xl
+  transition
+  "
+>
+  Reject
+</button>
 
                 </div>
               )}

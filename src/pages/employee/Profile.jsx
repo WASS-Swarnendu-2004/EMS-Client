@@ -16,33 +16,38 @@ const Profile = () => {
     fetchProfile();
   }, []);
 
-  const fetchProfile = async () => {
-    try {
-      const res = await api.get(
-        // 
-        
-      );
+ const fetchProfile = async () => {
+  try {
 
-      const currentEmployee =
-        res.data.find(
-          (emp) =>
-            emp.userId?._id ===
-            loggedUser._id
-        );
+    const res = await api.get(
+      "/api/auth/profile"
+    );
 
-      setEmployee(currentEmployee);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    setEmployee(res.data);
+
+  } catch (error) {
+
+    console.log(error);
+
+  } finally {
+
+    setLoading(false);
+
+  }
+};
+
 
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
         <p className="text-lg font-medium">
-          Loading Profile...
+          <div className="bg-white rounded-2xl shadow p-10">
+
+  <p className="text-center text-gray-500">
+    Loading your profile...
+  </p>
+
+</div>
         </p>
       </div>
     );
@@ -73,7 +78,7 @@ const Profile = () => {
             font-bold
           "
           >
-            {employee?.userId?.name
+            {employee?.name
               ?.charAt(0)
               .toUpperCase()}
           </div>
@@ -89,7 +94,7 @@ const Profile = () => {
             </p>
 
             <p className="text-lg font-semibold">
-              {employee?.userId?.name ||
+              {employee?.name ||
                 "N/A"}
             </p>
           </div>
@@ -100,18 +105,7 @@ const Profile = () => {
             </p>
 
             <p className="text-lg font-semibold">
-              {employee?.userId?.email ||
-                "N/A"}
-            </p>
-          </div>
-
-          <div className="border-b pb-3">
-            <p className="text-gray-500 text-sm">
-              Department
-            </p>
-
-            <p className="text-lg font-semibold">
-              {employee?.department ||
+              {employee?.email ||
                 "N/A"}
             </p>
           </div>
@@ -121,10 +115,19 @@ const Profile = () => {
               Role
             </p>
 
-            <p className="text-lg font-semibold">
-              {employee?.userId?.role ||
-                "N/A"}
-            </p>
+            <span
+  className="
+  inline-block
+  px-4
+  py-2
+  rounded-full
+  bg-blue-100
+  text-blue-700
+  font-semibold
+  "
+>
+  {employee?.role || "N/A"}
+</span>
           </div>
 
          

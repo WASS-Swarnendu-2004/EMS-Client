@@ -93,7 +93,20 @@ const AdminLayout = () => {
           >
             Employees
           </NavLink>
-
+          
+          <NavLink
+            to="admintools"
+            onClick={closeSidebar}
+            className={({ isActive }) =>
+              `px-3 py-2 rounded transition ${
+                isActive
+                  ? "bg-blue-600"
+                  : "hover:bg-slate-700"
+              }`
+            }
+          >
+            Admin Tools
+          </NavLink>
 
           <NavLink to="wfh"onClick={closeSidebar}className={({ isActive }) =>`px-3 py-2 rounded transition ${isActive? "bg-blue-600"
         : "hover:bg-slate-700"

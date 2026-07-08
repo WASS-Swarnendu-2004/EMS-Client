@@ -4,6 +4,7 @@ import api from "../../api/axios";
 const Employees = () => {
   const [employees, setEmployees] = useState([]);
   const [search, setSearch] = useState("");
+  const [selectedDepartment, setSelectedDepartment] = useState("")
 
   const [formData, setFormData] = useState({
     name: "",
@@ -13,20 +14,46 @@ const Employees = () => {
   });
 
   const [showModal, setShowModal] = useState(false);
+  const [departments, setDepartments] = useState([]);
 
   
-  const fetchEmployees = async () => {
+  const fetchEmployees = async (department = "") => {
     try {
-      const res = await api.get("/api/employees");
+      // const res = await api.get("/api/employees");
+      const url = department ?
+        `/api/employees?search=${department}`
+        : "/api/employees"
+      console.log(url);
+      
+      const res = await api.get(url);
       setEmployees(res.data);
     } catch (err) {
       console.log(err);
     }
   };
 
+  const fetchDepartments = async () => {
+    try {
+      const res = await api.get("/api/employees/departments");
+      setDepartments(res.data)
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
+
+  // useEffect(() => {
+  //   fetchEmployees();
+  //   fetchDepartments();
+  // }, []);
+
   useEffect(() => {
-    fetchEmployees();
-  }, []);
+    fetchDepartments();
+  }, [])
+
+  useEffect(() => {
+    fetchEmployees(selectedDepartment);
+  }, [selectedDepartment])
 
   
   const handleSubmit = async (e) => {
@@ -43,7 +70,7 @@ const Employees = () => {
       });
 
       setShowModal(false);
-      fetchEmployees();
+      fetchEmployees(selectedDepartment);
     } catch (err) {
       console.log(err);
       alert(err?.response?.data?.message || "Failed to create employee");
@@ -61,12 +88,13 @@ const Employees = () => {
     try {
       await api.delete(`/api/employees/${id}`);
 
-      // remove from UI instantly (no reload)
-      setEmployees((prev) =>
-        prev.filter((emp) => emp._id !== id)
-      );
+      
+      // setEmployees((prev) =>
+      //   prev.filter((emp) => emp._id !== id)
+      // );
 
       alert("Employee deleted successfully");
+      fetchEmployees(selectedDepartment)
     } catch (err) {
       console.log(err);
       alert(
@@ -85,7 +113,7 @@ const Employees = () => {
   return (
     <div className="space-y-6">
 
-      {/* HEADER */}
+      
       <div className="flex flex-col md:flex-row justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-slate-800">
@@ -115,13 +143,39 @@ const Employees = () => {
         </div>
       </div>
 
-      <input
+      {/* <input
         type="text"
         placeholder="Search employee..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         className="w-full md:w-80 border p-3 rounded-xl"
-      />
+      /> */}
+
+      <div className="flex flex-col md:flex-row gap-4">
+        <input
+          type="text"
+          placeholder="Seacrh Employee"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full md:w-80 border p-3 rounded-xl"
+        />
+
+        <select
+          value={selectedDepartment}
+          onChange={(e) => setSelectedDepartment(e.target.value)}
+          className="w-full md:w-60 border p-3 rounded-xl"
+        >
+          <option value="">All Departments</option>
+
+          {departments.map((dept) => (
+            <option key={dept} value={dept}>
+              {dept}
+            </option>
+          ))}
+
+        </select>
+
+      </div>
 
     
       <div className="hidden md:block bg-white rounded-2xl shadow overflow-hidden">
@@ -231,11 +285,8 @@ const Employees = () => {
                 className="w-full border p-3 rounded"
                 required
               >
-                <option value="">Select Department</option>
-                <option value="IT">IT</option>
-                <option value="HR">HR</option>
-                <option value="Finance">Finance</option>
-                <option value="Marketing">Marketing</option>
+                <option value="">Select Department</option>{departments.map((dept) => (<option key={dept} value={dept}>{dept} </option>
+              ))}
               </select>
 
               <div className="flex gap-3">
