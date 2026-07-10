@@ -64,7 +64,7 @@ const Profile = () => {
         {/* Avatar */}
 
         <div className="flex justify-center mb-6">
-          <div
+          {/* <div
             className="
             w-24
             h-24
@@ -81,7 +81,9 @@ const Profile = () => {
             {employee?.name
               ?.charAt(0)
               .toUpperCase()}
-          </div>
+          </div> */}
+          <img src={`https://api.dicebear.com/9.x/adventurer/svg?seed=${employee?.name}`} alt="Profile"
+          className="w-24 h-24 rounded-full border-4 border-blue-500"/>
         </div>
 
         {/* Profile Details */}

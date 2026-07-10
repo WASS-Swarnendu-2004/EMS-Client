@@ -25,8 +25,9 @@ const EmployeeLayout = () => {
 
       <div
         className={`
-        fixed md:static top-0 left-0 h-screen w-64
-        bg-slate-800 text-white p-5 flex flex-col z-50
+        fixed md:sticky top-0 left-0 h-screen w-64
+        bg-gradient-to-b from-slate-500 to-slate-700
+        text-white p-5 flex flex-col z-50
         transform transition-transform duration-300
         ${
           sidebarOpen
@@ -57,9 +58,9 @@ const EmployeeLayout = () => {
             My Tasks
           </NavLink>
 
-          <NavLink to="dailyworklog"onClick={closeSidebar}className={({ isActive }) =>`px-3 py-2 rounded ${isActive? "bg-blue-600": "hover:bg-slate-700"}`}>
+          {/* <NavLink to="dailyworklog"onClick={closeSidebar}className={({ isActive }) =>`px-3 py-2 rounded ${isActive? "bg-blue-600": "hover:bg-slate-700"}`}>
             Daily Work Log
-          </NavLink>
+          </NavLink> */}
 
           <NavLink to="applyleave" onClick={closeSidebar} className={({isActive}) => `px-3 py-2 rounded ${isActive ? "bg-blue-600" : "hover:bg-slate-700"}`}>
             Apply Leave

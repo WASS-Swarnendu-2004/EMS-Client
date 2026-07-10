@@ -28,16 +28,14 @@ const AdminWFH = () => {
 ) => {
   try {
 
-    const endpoint =
-      status === "Approved"
+    const endpoint = status === "Approved"
         ? `/api/wfh/approve/${id}`
         : `/api/wfh/reject/${id}`;
 
     const res = await api.put(endpoint);
 
     alert(
-      res.data.message ||
-      `WFH Request ${status}`
+      res.data.message ||`WFH Request ${status}`
     );
 
     fetchWFHRequests();
@@ -47,20 +45,15 @@ const AdminWFH = () => {
     console.log(error);
 
     alert(
-      error?.response?.data?.message ||
-      "Failed to update status"
+      error?.response?.data?.message ||"Failed to update status"
     );
 
   }
 };
   
 
-  const getStatusColor = (
-    status
-  ) => {
-    switch (
-      status?.toLowerCase()
-    ) {
+  const getStatusColor = (status) => {
+    switch (status?.toLowerCase()) {
       case "approved":
         return "bg-green-100 text-green-700";
 
@@ -117,8 +110,7 @@ const AdminWFH = () => {
     <h2 className="text-3xl font-bold text-yellow-700 mt-2">
       {
         requests.filter(
-          (request) =>
-            request.status === "Pending"
+          (request) => request.status === "Pending"
         ).length
       }
     </h2>
@@ -132,8 +124,7 @@ const AdminWFH = () => {
     <h2 className="text-3xl font-bold text-green-700 mt-2">
       {
         requests.filter(
-          (request) =>
-            request.status === "Approved"
+          (request) => request.status === "Approved"
         ).length
       }
     </h2>
@@ -147,8 +138,7 @@ const AdminWFH = () => {
     <h2 className="text-3xl font-bold text-red-700 mt-2">
       {
         requests.filter(
-          (request) =>
-            request.status === "Rejected"
+          (request) => request.status === "Rejected"
         ).length
       }
     </h2>

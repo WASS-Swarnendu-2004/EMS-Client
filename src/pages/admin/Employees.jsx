@@ -289,6 +289,18 @@ const Employees = () => {
               ))}
               </select>
 
+              {/* <input
+                type="text"
+                placeholder="Enter Department"
+                value={formData.Department}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    Department: e.target.value.trim(),
+                  })}
+                className="w-full border p-3 rounded"
+                  required
+                /> */}
               <div className="flex gap-3">
                 <button className="flex-1 bg-blue-600 text-white py-3 rounded">
                   Save

@@ -8,12 +8,12 @@ const AdminTasks = () => {
   const [assignmentType, setAssignmentType] =
   useState("single");
 
-const [formData, setFormData] = useState({
-  title: "",
-  description: "",
-  assignedTo: [],
-  dueDate: "",
-});
+  const [formData, setFormData] = useState({
+   title: "",
+   description: "",
+   assignedTo: [],
+   dueDate: "",
+  });
 
   const fetchEmployees = async () => {
     try {
@@ -200,7 +200,7 @@ const [formData, setFormData] = useState({
 
 </div>
            
-             {assignmentType === "single" && (
+   {assignmentType === "single" && (
   <select
     value={formData.assignedTo[0] || ""}
     onChange={(e) =>

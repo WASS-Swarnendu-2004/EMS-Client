@@ -27,9 +27,10 @@ const AdminLayout = () => {
       
       <div
         className={`
-        fixed md:static top-0 left-0 h-screen w-64
-        bg-gradient-to-b from-slate-900 to-slate-800
-        text-white p-5 flex flex-col shadow-xl z-50
+        fixed md:sticky top-0 left-0 h-screen w-64
+        bg-gradient-to-b from-slate-500 to-slate-700
+        text-white
+         p-5 flex flex-col shadow-xl z-50
         transform transition-transform duration-300
         ${
           sidebarOpen
@@ -94,7 +95,7 @@ const AdminLayout = () => {
             Employees
           </NavLink>
           
-          <NavLink
+          {/* <NavLink
             to="admintools"
             onClick={closeSidebar}
             className={({ isActive }) =>
@@ -106,7 +107,7 @@ const AdminLayout = () => {
             }
           >
             Admin Tools
-          </NavLink>
+          </NavLink> */}
 
           <NavLink to="wfh"onClick={closeSidebar}className={({ isActive }) =>`px-3 py-2 rounded transition ${isActive? "bg-blue-600"
         : "hover:bg-slate-700"
