@@ -18,7 +18,7 @@ import ApplyWFH from "../pages/employee/ApplyWFH";
 import WFHHistory from "../pages/employee/WFHHistory";
 import AdminWFH from "../pages/admin/AdminWFH";
 import DailyWorkLog from '../pages/employee/DailyWorkLog'
-import AdminTools from '../pages/admin/AdminTools'
+// import AdminTools from '../pages/admin/AdminTools'
 
 const AppRoutes = () => {
   return (
@@ -41,7 +41,7 @@ const AppRoutes = () => {
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="leaves" element={<AdminLeaves />} />
           <Route path="employees" element={<Employees />} />
-          <Route path="admintools" element={<AdminTools />} />
+          {/* <Route path="admintools" element={<AdminTools />} /> */}
           <Route path="wfh" element={<AdminWFH />} />
           <Route path="tasks" element={<AdminTasks />} />
         </Route>

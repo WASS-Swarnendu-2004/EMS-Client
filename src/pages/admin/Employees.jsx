@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import api from "../../api/axios";
 
 const Employees = () => {
   const [employees, setEmployees] = useState([]);
   const [search, setSearch] = useState("");
   const [selectedDepartment, setSelectedDepartment] = useState("")
+  const [isEditing, setIsEditing] = useState(false)
+  const [editingEmplyoeeId, setEditingEmployeeId] = useState(null)
 
   const [formData, setFormData] = useState({
     name: "",
@@ -60,8 +63,14 @@ const Employees = () => {
     e.preventDefault();
 
     try {
-      await api.post("/api/employees", formData);
 
+      if (isEditing) {
+        //Update Api
+        console.log("Updating");
+      } else {
+        const res = await api.post("/api/employees", formData);
+        toast(res.data.message || "Employee created successfully");
+      }
       setFormData({
         name: "",
         email: "",
@@ -69,11 +78,13 @@ const Employees = () => {
         department: "",
       });
 
-      setShowModal(false);
+      setShowModal(false)
+      setIsEditing(false)
+      setEditingEmployeeId(null)
       fetchEmployees(selectedDepartment);
     } catch (err) {
       console.log(err);
-      alert(err?.response?.data?.message || "Failed to create employee");
+      toast.error(err?.response?.data?.message || "Failed to create employee");
     }
   };
 
@@ -93,15 +104,29 @@ const Employees = () => {
       //   prev.filter((emp) => emp._id !== id)
       // );
 
-      alert("Employee deleted successfully");
+      toast.success("Employee deleted successfully");
       fetchEmployees(selectedDepartment)
     } catch (err) {
       console.log(err);
-      alert(
+      toast.error(
         err?.response?.data?.message || "Failed to delete employee"
       );
     }
   };
+
+  const handleEdit = (employee) => {
+    setIsEditing(true)
+    setEditingEmployeeId(employee._id)
+
+    setFormData({
+      name: employee.userId?.name || "",
+      email: employee.userId?.email || "",
+      password: "",
+      department: employee.department || "",
+    })
+
+    setShowModal(true)
+  }
 
   
   const filteredEmployees = employees.filter((employee) =>
@@ -126,7 +151,7 @@ const Employees = () => {
           onClick={() => setShowModal(true)}
           className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl"
         >
-          + Add Employee
+          {isEditing ? "Edit Employee" : "Add Employee"}
         </button>
       </div>
 
@@ -200,6 +225,12 @@ const Employees = () => {
 
                 
                 <td className="p-4">
+                   <button
+                    onClick={() => handleEdit(employee)}
+                    className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-lg"
+                  >
+                    Edit
+                  </button>
                   <button
                     onClick={() => handleDelete(employee._id)}
                     className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg"
@@ -225,6 +256,12 @@ const Employees = () => {
             <p>Role: {employee.userId?.role}</p>
             <p>Department: {employee.department}</p>
 
+             <button
+              onClick={() => handleEdit(employee)}
+              className="mt-3 bg-yellow-500 text-white px-3 py-1 rounded-lg"
+            >
+              Edit
+            </button>
             
             <button
               onClick={() => handleDelete(employee._id)}
@@ -303,12 +340,23 @@ const Employees = () => {
                 /> */}
               <div className="flex gap-3">
                 <button className="flex-1 bg-blue-600 text-white py-3 rounded">
-                  Save
+                  {isEditing ? "Update" : "Save"}
                 </button>
 
                 <button
                   type="button"
-                  onClick={() => setShowModal(false)}
+                  onClick={() => {
+                    setShowModal(false)
+                    setIsEditing(false)
+                    setEditingEmployeeId(null)
+                    setFormData({
+                      name: "",
+                      email: "",
+                      password: "",
+                      department: "",
+                    });
+                  } 
+                  }
                   className="flex-1 bg-gray-300 py-3 rounded"
                 >
                   Cancel

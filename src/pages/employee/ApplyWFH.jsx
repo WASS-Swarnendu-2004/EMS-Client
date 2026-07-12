@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import api from "../../api/axios";
+import { toast } from "react-toastify";
 
 const ApplyWFH = () => {
   const [formData, setFormData] = useState({
-    // startDate: "",
-    // endDate: "",
+    startDate: "",
+    endDate: "",
     reason: "",
   });
 
@@ -14,34 +15,28 @@ const ApplyWFH = () => {
     e.preventDefault();
 
     if (!formData.reason.trim()) {
-      alert("Please enter a reason for WFH.")
+      toast.warning("Please enter a reason for WFH.");
       return;
     }
 
     try {
       setLoading(true);
 
-      const res = await api.post(
-        "/api/wfh/apply",
-        formData
-      );
+      const res = await api.post("/api/wfh/apply", formData);
 
-      alert("WFH Request Submitted Successfully");
+      toast.success("WFH Request Submitted Successfully");
 
-      console.log(res.data);
+      // console.log(res.data);
 
       setFormData({
-        // startDate: "",
-        // endDate: "",
-        reason:"",
+        startDate: "",
+        endDate: "",
+        reason: "",
       });
     } catch (error) {
       console.log(error);
 
-      alert(
-        error?.response?.data?.message ||
-          "Failed to apply for WFH"
-      );
+      toast.error(error?.response?.data?.message || "Failed to apply for WFH");
     } finally {
       setLoading(false);
     }
@@ -56,21 +51,12 @@ const ApplyWFH = () => {
           Apply Work From Home
         </h1>
 
-        <p className="text-gray-500 mt-2">
-          Submit your Work From Home request
-        </p>
+        <p className="text-gray-500 mt-2">Submit your Work From Home request</p>
       </div>
 
-      
-
       <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-6"
-        >
-         
-
-          {/* <div>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
             <label className="block mb-2 font-medium text-slate-700">
               Start Date
             </label>
@@ -85,20 +71,10 @@ const ApplyWFH = () => {
                 })
               }
               required
-              className="
-                w-full
-                border
-                border-gray-300
-                rounded-xl
-                p-3
-                focus:outline-none
-                focus:ring-2
-                focus:ring-blue-500
+              className="w-fullborder border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-blue-500
               "
             />
           </div>
-
-          
 
           <div>
             <label className="block mb-2 font-medium text-slate-700">
@@ -115,97 +91,58 @@ const ApplyWFH = () => {
                 })
               }
               required
-              className="
-                w-full
-                border
-                border-gray-300
-                rounded-xl
-                p-3
-                focus:outline-none
-                focus:ring-2
-                focus:ring-blue-500
-              "
+              className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-          </div> */}
+          </div>
           <div>
-  <label className="block mb-2 font-medium text-slate-700">
-    Reason
-  </label>
+            <label className="block mb-2 font-medium text-slate-700">
+              Reason
+            </label>
 
-  <textarea
-    rows={5}
-    placeholder="Enter the reason for Work From Home..."
-    value={formData.reason}
-    onChange={(e) =>
-      setFormData({
-        ...formData,
-        reason: e.target.value,
-      })
-    }
-    required
-    className="
-      w-full
-      border
-      border-gray-300
-      rounded-xl
-      p-3
-      focus:outline-none
-      focus:ring-2
-      focus:ring-blue-500
-      resize-none
-    "
-  />
-</div>
+            <textarea
+              rows={5}
+              placeholder="Enter the reason for Work From Home..."
+              value={formData.reason}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  reason: e.target.value,
+                })
+              }
+              required
+              className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+            />
+          </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="
-              w-full
-              bg-blue-600
-              hover:bg-blue-700
-              text-white
-              py-3
-              rounded-xl
-              font-semibold
-              transition
-            "
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold transition"
           >
-            {loading
-              ? "Submitting..."
-              : "Apply For WFH"}
+            {loading ? "Submitting..." : "Apply For WFH"}
           </button>
         </form>
       </div>
 
       <div className="mt-6 bg-blue-50 border border-blue-200 rounded-2xl p-5">
+        <h3 className="text-lg font-semibold text-blue-800">
+          📌 Important Information
+        </h3>
 
-  <h3 className="text-lg font-semibold text-blue-800">
-    📌 Important Information
-  </h3>
+        <ul className="mt-3 space-y-2 text-sm text-blue-700 list-disc ml-5">
+          <li>
+            Provide a clear and valid reason for your Work From Home request.
+          </li>
 
-  <ul className="mt-3 space-y-2 text-sm text-blue-700 list-disc ml-5">
+          <li>Every request requires admin approval before it is accepted.</li>
 
-    <li>
-      Provide a clear and valid reason for your Work From Home request.
-    </li>
+          <li>
+            You can monitor the approval status from the WFH History page.
+          </li>
 
-    <li>
-      Every request requires admin approval before it is accepted.
-    </li>
-
-    <li>
-      You can monitor the approval status from the WFH History page.
-    </li>
-
-    <li>
-      Submitting multiple pending requests may delay approval.
-    </li>
-
-  </ul>
-
-</div>
-     
+          <li>Submitting multiple pending requests may delay approval.</li>
+        </ul>
+      </div>
     </div>
   );
 };

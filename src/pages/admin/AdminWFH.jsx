@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import {Loader2} from "lucide-react"
 import api from "../../api/axios";
 
 const AdminWFH = () => {
@@ -12,7 +14,7 @@ const AdminWFH = () => {
       setRequests(res.data);
     } catch (error) {
       console.log(error);
-      alert("Failed to fetch WFH requests");
+      toast.error("Failed to fetch WFH requests");
     } finally {
       setLoading(false);
     }
@@ -22,19 +24,15 @@ const AdminWFH = () => {
     fetchWFHRequests();
   }, []);
 
- const updateStatus = async (
-  id,
-  status
-) => {
+ const updateStatus = async (id,status) => {
   try {
-
-    const endpoint = status === "Approved"
+     const endpoint = status === "Approved"
         ? `/api/wfh/approve/${id}`
         : `/api/wfh/reject/${id}`;
 
     const res = await api.put(endpoint);
 
-    alert(
+    toast.success(
       res.data.message ||`WFH Request ${status}`
     );
 
@@ -44,7 +42,7 @@ const AdminWFH = () => {
 
     console.log(error);
 
-    alert(
+    toast.error(
       error?.response?.data?.message ||"Failed to update status"
     );
 
@@ -67,8 +65,12 @@ const AdminWFH = () => {
 
   if (loading) {
     return (
-      <div className="text-center py-10">
-        Loading WFH Requests...
+      <div className="flex flex-col items-center h-[70vh] gap-4">
+        <Loader2 className="w-10 h-10 text-blue-600 animate-spin" />
+        <p className="text-lg font-semibold text-gray-600">
+            Loading WFH Requests...
+        </p>
+
       </div>
     );
   }
