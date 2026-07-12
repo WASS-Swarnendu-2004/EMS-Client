@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { Loader2 } from "lucide-react";
 import api from "../../api/axios";
 
 const AdminTasks = () => {
   const [employees, setEmployees] = useState([]);
   const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [editingTaskId, setEditingTaskId] = useState(null);
 
@@ -30,10 +32,19 @@ const AdminTasks = () => {
 
   const fetchTasks = async () => {
     try {
+      setLoading(true)
       const res = await api.get("/api/tasks");
-      setTasks(res.data);
+      const validTasks = res.data.filter((task) => task.assignedTo && task.assignedTo._id)
+      setTasks(validTasks);
+
     } catch (error) {
       console.log(error);
+      toast.error(
+       error?.response?.data?.message ||
+       "Failed to load tasks."
+     )
+    } finally {
+      setLoading(false)
     }
   };
 
@@ -79,9 +90,20 @@ const AdminTasks = () => {
 
       console.log("Payload:", payload);
 
-      const res = await api.post("/api/tasks", payload);
+      let res;
 
-      toast.success(res.data.message);
+      if (isEditing) {
+        res = await api.put(`/api/tasks/${editingTaskId}`, payload)
+
+        toast.success(
+          res.data.message || "Task Updated Successfully"
+        );
+      } else {
+        res = await api.post("/api/tasks", payload)
+         toast.success(
+          res.data.message || "Task Created Successfully"
+        )
+      }
 
       setFormData({
         title: "",
@@ -91,6 +113,8 @@ const AdminTasks = () => {
       });
 
       setAssignmentType("single");
+      setIsEditing(false)
+      setEditingTaskId(null)
 
       fetchTasks();
     } catch (error) {
@@ -115,6 +139,7 @@ const AdminTasks = () => {
   const handleEdit = (task) => {
     setIsEditing(true);
     setEditingTaskId(task._id);
+    setAssignmentType("single")
 
     setFormData({
       title: task.title,
@@ -123,6 +148,18 @@ const AdminTasks = () => {
       dueDate: task.dueDate.split("T")[0],
     });
   };
+
+  if (loading) {
+  return (
+    <div className="flex flex-col items-center justify-center h-[70vh] gap-4">
+      <Loader2 className="w-10 h-10 text-blue-600 animate-spin" />
+
+      <p className="text-lg font-semibold text-gray-600">
+        Loading Tasks...
+      </p>
+    </div>
+  );
+}
 
   return (
     <div className="space-y-8">
@@ -373,7 +410,7 @@ const AdminTasks = () => {
                     Edit
                   </button>
                   <button
-                    onClick={() => handleEdit(task)}
+                    onClick={() => handleDelete(task._id)}
                     className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg"
                   >
                     Delete
