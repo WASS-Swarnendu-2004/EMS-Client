@@ -63,6 +63,8 @@ const AdminWFH = () => {
     }
   };
 
+  const validWFHReq = requests.filter((request) => request.employeeId)
+
   if (loading) {
     return (
       <div className="flex flex-col items-center h-[70vh] gap-4">
@@ -100,7 +102,7 @@ const AdminWFH = () => {
     </p>
 
     <h2 className="text-3xl font-bold mt-2">
-      {requests.length}
+      {validWFHReq.length}
     </h2>
   </div>
 
@@ -111,7 +113,7 @@ const AdminWFH = () => {
 
     <h2 className="text-3xl font-bold text-yellow-700 mt-2">
       {
-        requests.filter(
+        validWFHReq.filter(
           (request) => request.status === "Pending"
         ).length
       }
@@ -139,7 +141,7 @@ const AdminWFH = () => {
 
     <h2 className="text-3xl font-bold text-red-700 mt-2">
       {
-        requests.filter(
+        validWFHReq.filter(
           (request) => request.status === "Rejected"
         ).length
       }
@@ -150,7 +152,7 @@ const AdminWFH = () => {
 
 <div className="grid gap-5">
 
-  {requests.map((request) => (
+  {validWFHReq.map((request) => (
 
     <div
       key={request._id}

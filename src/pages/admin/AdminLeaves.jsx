@@ -76,6 +76,8 @@ const AdminLeaves = () => {
     }
   };
 
+  const validLeaves = leaves.filter((leave) => leave.employeeId)
+
   if (loading) {
   return (
     <div className="flex flex-col items-center justify-center h-[70vh] gap-4">
@@ -103,14 +105,14 @@ const AdminLeaves = () => {
           <div className="bg-white rounded-2xl shadow p-5 border">
             <p className="text-gray-500 text-sm">Total Leaves</p>
 
-            <h2 className="text-3xl font-bold mt-2">{leaves.length}</h2>
+            <h2 className="text-3xl font-bold mt-2">{validLeaves.length}</h2>
           </div>
 
           <div className="bg-yellow-50 rounded-2xl shadow p-5 border border-yellow-200">
             <p className="text-yellow-700 text-sm">Pending</p>
 
             <h2 className="text-3xl font-bold mt-2 text-yellow-700">
-              {leaves.filter((leave) => leave.status === "Pending").length}
+              {validLeaves.filter((leave) => leave.status === "Pending").length}
             </h2>
           </div>
 
@@ -118,7 +120,7 @@ const AdminLeaves = () => {
             <p className="text-green-700 text-sm">Approved</p>
 
             <h2 className="text-3xl font-bold mt-2 text-green-700">
-              {leaves.filter((leave) => leave.status === "Approved").length}
+              {validLeaves.filter((leave) => leave.status === "Approved").length}
             </h2>
           </div>
 
@@ -131,7 +133,7 @@ const AdminLeaves = () => {
           </div>
         </div>
         <div className="grid gap-4">
-          {leaves.map((leave) => (
+          {validLeaves.map((leave) => (
             <div
               key={leave._id}
               className="bg-white p-5 rounded-2xl shadow border hover:shadow-lg transition"
