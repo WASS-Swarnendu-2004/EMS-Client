@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { FaBars, FaTimes } from "react-icons/fa";
+import { FaBars, FaTimes,FaHome, FaTasks,FaUsers, FaBuilding, FaCalendarAlt, FaSignOutAlt } from "react-icons/fa";
 
 const AdminLayout = () => {
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(true)
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -26,23 +27,34 @@ const AdminLayout = () => {
 
       
       <div
-        className={`
-        fixed md:sticky top-0 left-0 h-screen w-64
-        bg-gradient-to-b from-slate-500 to-slate-700
-        text-white
-         p-5 flex flex-col shadow-xl z-50
-        transform transition-transform duration-300
-        ${
-          sidebarOpen
-            ? "translate-x-0"
-            : "-translate-x-full md:translate-x-0"
-        }
-      `}
+        className={`fixed md:sticky top-0 left-0 h-screen transition-all duration-300 w-64
+       ${desktopSidebarOpen ? "md:w-64" : "md:w-20"}
+       bg-gradient-to-b from-slate-500 to-slate-700
+       text-white
+       p-5 flex flex-col shadow-xl z-50
+       transform transition-transform duration-300
+      ${
+        sidebarOpen
+        ? "translate-x-0"
+        : "-translate-x-full md:translate-x-0"
+    }
+  `}
       >
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold">
-            Admin Panel
-          </h2>
+          <button
+            onClick={() => 
+              setDesktopSidebarOpen(!desktopSidebarOpen)
+            }
+            className="hidden md:block"
+          >
+            <FaBars size={20} />
+          </button>
+          {desktopSidebarOpen && (
+            <h2 className="text-2xl font-bold">
+              Admin Panel
+            </h2>
+          )}
+          
 
           <button
             className="md:hidden"
@@ -57,42 +69,60 @@ const AdminLayout = () => {
             to="dashboard"
             onClick={closeSidebar}
             className={({ isActive }) =>
-              `px-3 py-2 rounded transition ${
-                isActive
-                  ? "bg-blue-600"
-                  : "hover:bg-slate-700"
+              `flex items-center gap-3 px-3 py-2 rounded transition ${
+              isActive
+                ? "bg-blue-600"
+                : "hover:bg-slate-700"
               }`
             }
           >
-            Dashboard
+            <FaHome className="text-lg min-w-[20px]" />
+            {desktopSidebarOpen && <span>Dashboard</span>}
           </NavLink>
 
           <NavLink
             to="tasks"
             onClick={closeSidebar}
             className={({ isActive }) =>
-              `px-3 py-2 rounded transition ${
+              `flex items-center gap-3 px-3 py-2 rounded transition ${
                 isActive
                   ? "bg-blue-600"
                   : "hover:bg-slate-700"
               }`
             }
           >
-            Tasks
+            <FaTasks className="text-lg min-w-[20px]" />
+            {desktopSidebarOpen && <span>Tasks</span>}
           </NavLink>
 
           <NavLink
             to="employees"
             onClick={closeSidebar}
             className={({ isActive }) =>
-              `px-3 py-2 rounded transition ${
+              `flex items-center gap-3 px-3 py-2 rounded transition  ${
                 isActive
                   ? "bg-blue-600"
                   : "hover:bg-slate-700"
               }`
             }
           >
-            Employees
+            <FaUsers className="text-lg min-w-[20px]" />
+             {desktopSidebarOpen && <span>Employees</span>}
+          </NavLink>
+
+          <NavLink
+            to="Departments"
+            onClick={closeSidebar}
+            className={({ isActive }) =>
+              `flex items-center gap-3 px-3 py-2 rounded transition${
+                isActive
+                  ? "bg-blue-600"
+                  : "hover:bg-slate-700"
+              }`
+            }
+          >
+            <FaBuilding className="text-lg min-w-[20px]" />
+            {desktopSidebarOpen && <span>Add Department</span>}
           </NavLink>
           
           {/* <NavLink
@@ -109,32 +139,35 @@ const AdminLayout = () => {
             Admin Tools
           </NavLink> */}
 
-          <NavLink to="wfh"onClick={closeSidebar}className={({ isActive }) =>`px-3 py-2 rounded transition ${isActive? "bg-blue-600"
+          <NavLink to="wfh"onClick={closeSidebar}className={({ isActive }) =>`flex items-center gap-3 px-3 py-2 rounded transition ${isActive? "bg-blue-600"
         : "hover:bg-slate-700"
     }`}>
-          WFH Requests
+            <FaCalendarAlt className="text-lg min-w-[20px]" />
+            {desktopSidebarOpen && <span>WFH Requests</span>}
      </NavLink>
 
           <NavLink
             to="leaves"
             onClick={closeSidebar}
             className={({ isActive }) =>
-              `px-3 py-2 rounded transition ${
+              `flex items-center gap-3 px-3 py-2 rounded transition  ${
                 isActive
                   ? "bg-blue-600"
                   : "hover:bg-slate-700"
               }`
             }
           >
-            Leaves
+            <FaCalendarAlt className="text-lg min-w-[20px]" />
+            {desktopSidebarOpen && <span>Leaves</span>}
           </NavLink>
         </nav>
 
         <button
           onClick={handleLogout}
-          className="mt-auto bg-red-500 hover:bg-red-600 py-2 rounded-lg transition"
+          className="mt-auto flex items-center justify-center md:justify-start gap-3 bg-red-500 hover:bg-red-600 px-3 py-2 rounded-lg transition"
         >
-          Logout
+          <FaSignOutAlt className="text-lg min-w-[20px]" />
+          {desktopSidebarOpen && <span>Logout</span>}
         </button>
       </div>
 

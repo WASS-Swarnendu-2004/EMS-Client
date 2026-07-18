@@ -65,11 +65,19 @@ const Employees = () => {
     try {
 
       if (isEditing) {
-        //Update Api
-        console.log("Updating");
+        const payload = {
+          name: formData.name,
+          department: formData.department,
+        }
+        const res = await api.put(
+          `/api/employees/${editingEmplyoeeId}`,payload
+        )
+        toast.success(
+          res.data.message || "Employee updated successfully."
+        )
       } else {
         const res = await api.post("/api/employees", formData);
-        toast(res.data.message || "Employee created successfully");
+        toast.success(res.data.message || "Employee created successfully");
       }
       setFormData({
         name: "",
@@ -84,7 +92,10 @@ const Employees = () => {
       fetchEmployees(selectedDepartment);
     } catch (err) {
       console.log(err);
-      toast.error(err?.response?.data?.message || "Failed to create employee");
+      toast.error(err?.response?.data?.message || (isEditing 
+        ? "Failed to update employee"
+        : "Failed to create employee")
+      );
     }
   };
 
@@ -299,19 +310,27 @@ const Employees = () => {
                 onChange={(e) =>
                   setFormData({ ...formData, email: e.target.value })
                 }
-                className="w-full border p-3 rounded"
+                readOnly={isEditing}
+                className={`w-full border p-3     rounded ${isEditing ? "bg-gray-100 cursor-not-allowed" : ""
+                }`}
                 required
               />
 
               <input
                 type="password"
-                placeholder="Password"
+                placeholder={
+                  isEditing
+                    ? "Password cannot be changed"
+                    : "Password"
+                }
                 value={formData.password}
                 onChange={(e) =>
                   setFormData({ ...formData, password: e.target.value })
                 }
-                className="w-full border p-3 rounded"
-                required
+                className={`w-full border p-3 rounded ${isEditing ? "bg-gray-100 cursor-not-allowed" : ""
+                }`}
+                disabled={isEditing}
+                required={!isEditing}
               />
 
               <select

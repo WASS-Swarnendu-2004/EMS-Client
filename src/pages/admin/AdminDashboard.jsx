@@ -10,17 +10,56 @@ const AdminDashboard = () => {
 
   const fetchDashboard = async () => {
     try {
-      setLoading(true);
+      setLoading(true)
+      const [dashboardRes, leaveRes, wfhRes, employeesRes] = await Promise.all([
+        api.get("/api/dashboard/admin"),
+        api.get("/api/leaves"),
+        api.get("/api/wfh"),
+        api.get("/api/employees"),
+      ])
 
-      const res = await api.get("/api/dashboard/admin");
+      const dashboard = dashboardRes.data
+      const leaves = leaveRes.data
+      const wfh = wfhRes.data
+      const employees = employeesRes.data
 
-      setData(res.data);
-      setLoading(false);
-    } catch (err) {
-      setError("Failed to load dashboard");
+      
+
+      setData({
+        ...dashboard,
+
+        totalEmployees: employees.length,
+
+        totalLeaves: leaves.length,
+        approvedLeaves: leaves.filter(
+          (leave) => leave.status === "Approved"
+        ).length,
+        pendingLeaves: leaves.filter(
+          (leave) => leave.status === "Pending"
+        ).length,
+        rejectedLeaves: leaves.filter(
+          (leave) => leave.status === "Rejected"
+        ).length,
+
+        totalWFH: wfh.length,
+        approvedWFH: wfh.filter(
+          (item) => item.status === "Approved"
+        ).length,
+        pendingWFH: wfh.filter(
+          (item) => item.status === "Pending"
+        ).length,
+        rejectedWFH: wfh.filter(
+          (item) => item.status === "Rejected"
+        ).length,
+
+      })
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Something went wrong");
+    } finally {
       setLoading(false);
     }
-  };
+  }
+  
 
   useEffect(() => {
     fetchDashboard();
@@ -89,6 +128,11 @@ const AdminDashboard = () => {
         <div className="bg-pink-100 p-5 rounded-xl shadow">
           <h2 className="text-lg font-semibold">Pending WFH Requests</h2>
           <p className="text-3xl font-bold mt-2">{data.pendingWFH}</p>
+        </div>
+
+        <div className="bg-pink-100 p-5 rounded-xl shadow">
+          <h2 className="text-lg font-semibold">Rejected WFH Requests</h2>
+          <p className="text-3xl font-bold mt-2">{data.rejectedWFH}</p>
         </div>
       </div>
     </div>
