@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { FaBars, FaTimes } from "react-icons/fa";
+import { FaBars, FaTimes, FaHome, FaTasks, FaCalendarAlt, FaUser, FaSignOutAlt } from "react-icons/fa";
 
 const EmployeeLayout = () => {
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(true)
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -25,7 +26,10 @@ const EmployeeLayout = () => {
 
       <div
         className={`
-        fixed md:sticky top-0 left-0 h-screen w-64
+        fixed md:sticky top-0 left-0 h-screen 
+        transition-all duration-300
+        ${desktopSidebarOpen ? "md:w-64" : "md:w-20"}
+        w-64
         bg-gradient-to-b from-slate-500 to-slate-700
         text-white p-5 flex flex-col z-50
         transform transition-transform duration-300
@@ -37,9 +41,19 @@ const EmployeeLayout = () => {
       `}
       >
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold">
-            Employee Panel
-          </h2>
+          <button
+            onClick={() => 
+              setDesktopSidebarOpen(!desktopSidebarOpen)
+            }
+            className="hidden md:block"
+          >
+            <FaBars size={20} />
+          </button>
+          {desktopSidebarOpen && (
+            <h2 className="text-2xl font-bold">
+              Employee Panel
+            </h2>
+          )}
 
           <button
             className="md:hidden"
@@ -50,46 +64,91 @@ const EmployeeLayout = () => {
         </div>
 
         <nav className="flex flex-col gap-3">
-          <NavLink to="dashboard" onClick={closeSidebar} className={({isActive}) => `px-3 py-2 rounded ${isActive ? "bg-blue-600" : "hover:bg-slate-700"}`}>
-            Dashboard
+          <NavLink
+            to="dashboard"
+            onClick={closeSidebar}
+            className={({ isActive }) =>
+              `flex items-center gap-3 px-3 py-2 rounded transition ${isActive
+                ? "bg-blue-600"
+                : "hover:bg-slate-700"}`}>
+            <FaHome className="text-lg min-w-[20px]" />
+            {desktopSidebarOpen && <span>Dashboard</span>}
           </NavLink>
 
-          <NavLink to="mytasks" onClick={closeSidebar} className={({isActive}) => `px-3 py-2 rounded ${isActive ? "bg-blue-600" : "hover:bg-slate-700"}`}>
-            My Tasks
+          <NavLink
+            to="mytasks"
+            onClick={closeSidebar}
+            className={({ isActive }) =>
+              `flex items-center gap-3 px-3 py-2 rounded transition ${isActive
+                ? "bg-blue-600"
+                : "hover:bg-slate-700"}`}>
+            <FaTasks className="text-lg min-w-[20px]" />
+            {desktopSidebarOpen && <span>My Tasks</span>}
           </NavLink>
 
           {/* <NavLink to="dailyworklog"onClick={closeSidebar}className={({ isActive }) =>`px-3 py-2 rounded ${isActive? "bg-blue-600": "hover:bg-slate-700"}`}>
             Daily Work Log
           </NavLink> */}
 
-          <NavLink to="applyleave" onClick={closeSidebar} className={({isActive}) => `px-3 py-2 rounded ${isActive ? "bg-blue-600" : "hover:bg-slate-700"}`}>
-            Apply Leave
+          <NavLink
+            to="applyleave"
+            onClick={closeSidebar} className={({ isActive }) =>
+              `flex items-center gap-3 px-3 py-2 rounded transition ${isActive
+                ? "bg-blue-600"
+                : "hover:bg-slate-700"}`}>
+            <FaCalendarAlt className="text-lg min-w-[20px]" />
+            {desktopSidebarOpen && <span>Apply Leave</span>}
           </NavLink>
 
-          <NavLink to="leavehistory" onClick={closeSidebar} className={({isActive}) => `px-3 py-2 rounded ${isActive ? "bg-blue-600" : "hover:bg-slate-700"}`}>
-            Leave History
+          <NavLink
+            to="leavehistory"
+            onClick={closeSidebar}
+            className={({ isActive }) =>
+              `flex items-center gap-3 px-3 py-2 rounded transition ${isActive ? "bg-blue-600" : "hover:bg-slate-700"}`}>
+            <FaCalendarAlt className="text-lg min-w-[20px]" />
+            {desktopSidebarOpen && <span>Leave History</span>}
           </NavLink>
 
-          <NavLink to="applywfh" onClick={closeSidebar}className={({isActive}) =>
-          `px-3 py-2 rounded ${isActive? "bg-blue-600": "hover:bg-slate-700"}`}>
-             Apply WFH
+          <NavLink
+            to="applywfh"
+            onClick={closeSidebar}
+            className={({ isActive }) =>
+            `flex items-center gap-3 px-3 py-2 rounded transition
+            ${isActive ?
+                "bg-blue-600" : "hover:bg-slate-700"}`}>
+            <FaCalendarAlt className="text-lg min-w-[20px]" />
+            {desktopSidebarOpen && <span>Apply WFH</span>}
           </NavLink>
 
-          <NavLink to="wfhhistory" onClick={closeSidebar}className={({isActive}) =>
-          `px-3 py-2 rounded ${isActive? "bg-blue-600": "hover:bg-slate-700"}`}>
-            WFH History
+          <NavLink
+            to="wfhhistory"
+            onClick={closeSidebar} className={({ isActive }) =>
+              `flex items-center gap-3 px-3 py-2 rounded transition
+            ${isActive
+                ? "bg-blue-600"
+                : "hover:bg-slate-700"}`}>
+            <FaCalendarAlt className="text-lg min-w-[20px]" />
+            {desktopSidebarOpen && <span>WFH History</span>}
         </NavLink>
 
-          <NavLink to="profile" onClick={closeSidebar} className={({isActive}) => `px-3 py-2 rounded ${isActive ? "bg-blue-600" : "hover:bg-slate-700"}`}>
-            Profile
+          <NavLink
+            to="profile"
+            onClick={closeSidebar}
+            className={({ isActive }) =>
+              `flex items-center gap-3 px-3 py-2 rounded transition ${isActive
+                ? "bg-blue-600"
+                : "hover:bg-slate-700"}`}>
+            <FaUser className="text-lg min-w-[20px]" />
+            {desktopSidebarOpen && <span>Profile</span>}
           </NavLink>
         </nav>
 
         <button
           onClick={handleLogout}
-          className="mt-auto bg-red-500 hover:bg-red-600 py-2 rounded-lg"
+          className="mt-auto flex items-center justify-center md:justify-start gap-3 bg-red-500 hover:bg-red-600 px-3 py-2 rounded-lg transition"
         >
-          Logout
+          <FaSignOutAlt className="text-lg min-w-[20px]" />
+          {desktopSidebarOpen && <span>Logout</span>}
         </button>
       </div>
 
