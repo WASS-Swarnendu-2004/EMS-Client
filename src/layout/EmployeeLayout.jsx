@@ -86,9 +86,16 @@ const EmployeeLayout = () => {
             {desktopSidebarOpen && <span>My Tasks</span>}
           </NavLink>
 
-          {/* <NavLink to="dailyworklog"onClick={closeSidebar}className={({ isActive }) =>`px-3 py-2 rounded ${isActive? "bg-blue-600": "hover:bg-slate-700"}`}>
-            Daily Work Log
-          </NavLink> */}
+          <NavLink
+            to="dailyworklog"
+            onClick={closeSidebar}
+            className={({ isActive }) =>
+              `flex items-center gap-3 px-3 py-2 rounded transition ${isActive
+                ? "bg-blue-600"
+                : "hover:bg-slate-700"}`}>
+            <FaTasks className="text-lg min-w-[20px]" />
+            {desktopSidebarOpen && <span>Daily Work Log</span>}
+          </NavLink>
 
           <NavLink
             to="applyleave"
