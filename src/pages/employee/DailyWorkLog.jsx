@@ -1,28 +1,51 @@
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 
 const DailyWorkLog = () => {
-  const [taskInput, setTaskInput] = useState("");
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    category: "Frontend",
+    priority: "Medium",
+  })
   const [tasks, setTasks] = useState([]);
 
  
   const handleAddTask = () => {
-    if (taskInput.trim() === "") return;
+    if (formData.title.trim() === "" || formData.description.trim() === "") return;
 
     const newTask = {
       id: Date.now(),
-      text: taskInput,
-      completed: false,
+      title: formData.title,
+      description: formData.description,
+      category: formData.category,
+      priority: formData.priority,
+      status: "Pending",
+      date: new Date().toLocaleDateString(),
+      time: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
     };
 
     setTasks([...tasks, newTask]);
-    setTaskInput("");
+    setFormData({
+      title: "",
+      description: "",
+      category: "Frontend",
+      priority: "Medium",
+    })
   };
 
   
   const toggleTask = (id) => {
     const updated = tasks.map((task) =>
       task.id === id
-        ? { ...task, completed: !task.completed }
+        ? {
+          ...task, 
+          status:
+            task.status === "Completed" ? "Pending" : "Completed",
+        }
         : task
     );
 
@@ -46,14 +69,61 @@ const DailyWorkLog = () => {
       </div>
 
       
-      <div className="w-full max-w-xl flex gap-2 mb-6">
+      <div className="w-full max-w-xl flex flex-col gap-2 mb-6">
         <input
           className="flex-1 p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
           type="text"
           placeholder="Enter today's task..."
-          value={taskInput}
-          onChange={(e) => setTaskInput(e.target.value)}
+          value={formData.title}
+          onChange={(e) => setFormData({
+            ...formData,
+            title: e.target.value,
+          })}
         />
+        <textarea
+          rows={4}
+          className="flex-1 p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+          placeholder="Enter work description..."
+          value={formData.description}
+          onChange={(e) => setFormData({
+            ...formData,
+            description:e.target.value,
+          })}
+        />
+        <select
+          className="p-3 rounded-lg border border-gray focus:outline-none focus:ring-2 focus:ring-indigo-400"
+          value={formData.category}
+          onChange={(e) =>
+            setFormData({
+              ...formData,
+              category: e.target.value,
+            })
+          }
+        >
+          <option value="Design">Design</option> 
+          <option value="Frontend">Frontend</option>
+          <option value="Backend">Backend</option>  
+          <option value="Testing">Testing</option> 
+          <option value="Bug Fix">Bug Fix</option> 
+          <option value="Meeting">Meeting</option> 
+          <option value="Research">Research</option> 
+        </select>
+
+
+        <select
+          className="p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+          value={formData.priority}
+          onChange={(e) =>
+            setFormData({
+              ...formData,
+              priority: e.target.value,
+            })
+          }
+        >
+         <option value="High">High</option>
+         <option value="Medium">Medium</option>
+         <option value="Low">Low</option>
+        </select>
 
         <button
           onClick={handleAddTask}
@@ -69,10 +139,10 @@ const DailyWorkLog = () => {
           Total: {tasks.length}
         </div>
         <div className="bg-white shadow px-4 py-2 rounded-lg">
-          Completed: {tasks.filter(t => t.completed).length}
+          Completed: {tasks.filter(t => t.status === "Completed").length}
         </div>
         <div className="bg-white shadow px-4 py-2 rounded-lg">
-          Pending: {tasks.filter(t => !t.completed).length}
+          Pending: {tasks.filter(t => t.status === "Pending").length}
         </div>
       </div>
 
@@ -87,35 +157,63 @@ const DailyWorkLog = () => {
             <div
               key={task.id}
               className={`flex items-center justify-between bg-white shadow rounded-xl p-4 transition ${
-                task.completed ? "opacity-60" : ""
+                task.status === "Completed" ? "opacity-60" : ""
               }`}
             >
-              
+              <div className="flex justify-between items start">
+                <div className="flex-1">
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="checkbox"
+                      checked={task.status === "Completed"}
+                      onChange={() => toggleTask(task.id)}
+                      className="w-4 h-4"
+                    />
+                      
+                    <h3
+                      className={`text-lg font-semibold ${
+                        task.status === "Completed"
+                        ? "line-through text-gray-400"
+                        :""
+                      }`}
+                    >
+                     {task.title} 
+                    </h3>
+                    <p className="text-gray-600 mb-3">
+                      {task.description}
+                    </p>
 
-              <div className="flex items-center gap-3">
-                <input
-                  type="checkbox"
-                  checked={task.completed}
-                  onChange={() => toggleTask(task.id)}
-                  className="w-4 h-4"
-                />
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      <span className="bg-yellow-100 text-yellow-700 px-2 py-1 rounded">
+                        {task.category}
+                      </span>
 
-                <span
-                  className={`text-gray-800 ${
-                    task.completed ? "line-through text-gray-400" : ""
-                  }`}
-                >
-                  {task.text}
-                </span>
+                      <span className="bg-yellow-100 text-yellow-700 px-2 py-1 rounded">
+                        {task.priority}
+                      </span>
+
+                      <span
+                        className={`px-2 py-1 rounded ${
+                          task.status === "Completed"
+                          ? "bg-green-100 text-green-700"
+                          : "bg-orange-100 text-orange-700"
+                      }`}>
+                          {task.status}
+                      </span>
+                      <p className="text-sm text-gray-500">
+                        {task.date} • {task.time}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => deleteTask(task.id)}
+                      className="text-red-500 hover:text-red-700 ml-4"
+                    >
+                      Delete
+                    </button>
+                  </div>
+
+                </div>
               </div>
-
-              
-              <button
-                onClick={() => deleteTask(task.id)}
-                className="text-red-500 hover:text-red-700 text-lg"
-              >
-                Delete task
-              </button>
             </div>
           ))
         )}

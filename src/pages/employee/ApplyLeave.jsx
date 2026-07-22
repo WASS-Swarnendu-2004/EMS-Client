@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import api from "../../api/axios";
 import { toast } from "react-toastify";
 
+
 const ApplyLeave = () => {
   const [reason, setReason] = useState("");
   const [fromDate, setFromDate] = useState("");
